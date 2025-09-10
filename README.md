@@ -6,13 +6,13 @@ attachments:
   - scopes
       - iron sights: IRON
           - iron sights: IRON
-      - non magnifying: NM
+      - non magnifying: NONMAGNIFIED
           - holo a/b/c/d: HOLO_A/B/C/D
           - red dot a/b/c: RED_DOT_A/B/C
           - reflex a/b/c/d: REFLEX_A/B/C/D
-      - magnified: MAG
+      - magnified: MAGNIFIED
           - magnified a/b/c: MAGNIFIED_A/B/C
-      - telescopic: TES
+      - telescopic: TELESCOPIC
           - telescopic a/b: TELESCOPIC_A/B
   - barrels: barrels
       - flash hider: FLASH
@@ -30,11 +30,11 @@ attachments:
       - none: NONE
   - gadgets: gadgets
       - attackers: attack
-          - breach charge: BREACH
+          - breach charge: SOFT
           - claymore: CLAY
           - impact emp grenade: EMP
           - frag grenade: FRAG
-          - hard breach: HARD_BREACH
+          - hard breach: HARD
           - smoke grenade: SMOKE
           - flash grenade: FLASH
       - defenders: defend
@@ -43,10 +43,10 @@ attachments:
           - deployable shield: DEP
           - observation blocker: OBV
           - impact grenade: IMP
-          - c4: C4
+          - c4: CF
           - proximity alarm: PROX
 types:
-  - operator types:
+  - operator role types:
       - intel: INTEL
       - anti-gadget: AG
       - support: SUP
@@ -78,7 +78,7 @@ attributes:
       - ads time: ADS
       - fire rate: FIRE_RATE
       - magazine: MAG
-      - max capacitY: MAX
+      - max capacity: MAX
       - reload speed: RELOAD
       - run speed modifier: RSM
       - destruction: DEST

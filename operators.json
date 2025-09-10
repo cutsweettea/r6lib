@@ -1,6 +1,6 @@
 {
     "attack": {
-
+        
     },
     "defend": {
         "SENTRY": {
@@ -9,7 +9,7 @@
             "speed": 2,
             "health": 2,
             "ability": "SPECIAL",
-            "gadgets": ["BARB", "BP", "DEP", "OBV", "IMP", "C4", "PROX"],
+            "gadgets": ["BARB", "BP", "DEP", "OBV", "IMP", "CF", "PROX"],
             "weapons": {
                 "primaries": {
                     "COMMANDO 9": {
@@ -25,7 +25,7 @@
                         "attachments": {
                             "scopes": {
                                 "IRON": ["IRON"],
-                                "NM": ["RED_DOT_A", "RED_DOT_B", "RED_DOT_C", "HOLO_A", "HOLO_B", "HOLO_C", "HOLO_D", "REFLEX_A", "REFLEX_B", "REFLEX_C"]
+                                "NONMAGNIFIED": ["RED_DOT_A", "RED_DOT_B", "RED_DOT_C", "HOLO_A", "HOLO_B", "HOLO_C", "HOLO_D", "REFLEX_A", "REFLEX_B", "REFLEX_C"]
                             },
                             "barrels": ["FLASH", "COMP", "MUZZLE", "SUPP", "EXT", "NONE"],
                             "grips": ["VERT", "ANGLED", "HORI"],
@@ -70,7 +70,7 @@
                         "attachments": {
                             "scopes": {
                                 "IRON": ["IRON"],
-                                "NM": ["RED_DOT_A", "RED_DOT_B", "RED_DOT_C", "HOLO_A", "HOLO_B", "HOLO_C", "HOLO_D", "REFLEX_A", "REFLEX_B", "REFLEX_C"]
+                                "NONMAGNIFIED": ["RED_DOT_A", "RED_DOT_B", "RED_DOT_C", "HOLO_A", "HOLO_B", "HOLO_C", "HOLO_D", "REFLEX_A", "REFLEX_B", "REFLEX_C"]
                             },
                             "underbarrels": ["LASER", "NONE"]
                         },
@@ -100,7 +100,7 @@
                         "attachments": {
                             "scopes": {
                                 "IRON": ["IRON"],
-                                "NM": ["RED_DOT_A", "RED_DOT_B", "RED_DOT_C", "HOLO_A", "HOLO_B", "HOLO_C", "HOLO_D", "REFLEX_A", "REFLEX_B", "REFLEX_C"]
+                                "NONMAGNIFIED": ["RED_DOT_A", "RED_DOT_B", "RED_DOT_C", "HOLO_A", "HOLO_B", "HOLO_C", "HOLO_D", "REFLEX_A", "REFLEX_B", "REFLEX_C"]
                             },
                             "barrels": ["SUPP", "NONE"],
                             "grips": ["VERT", "ANGLED", "HORI"],
@@ -164,7 +164,7 @@
                         "attachments": {
                             "scopes": {
                                 "IRON": ["IRON"],
-                                "NM": ["RED_DOT_A", "RED_DOT_B", "RED_DOT_C", "HOLO_A", "HOLO_B", "HOLO_C", "HOLO_D", "REFLEX_A", "REFLEX_B", "REFLEX_C"]
+                                "NONMAGNIFIED": ["RED_DOT_A", "RED_DOT_B", "RED_DOT_C", "HOLO_A", "HOLO_B", "HOLO_C", "HOLO_D", "REFLEX_A", "REFLEX_B", "REFLEX_C"]
                             },
                             "underbarrels": ["LASER", "NONE"]
                         },
@@ -185,7 +185,7 @@
             }
         },
         "SMOKE": {
-            "type": ["AE", "TRAPPER"],
+            "type": ["AE", "TRAP"],
             "difficulty": 2,
             "speed": 2,
             "health": 2,
@@ -206,7 +206,7 @@
                         "attachments": {
                             "scopes": {
                                 "IRON": ["IRON"],
-                                "NM": ["RED_DOT_A", "RED_DOT_B", "RED_DOT_C", "HOLO_A", "HOLO_B", "HOLO_C", "HOLO_D", "REFLEX_A", "REFLEX_B", "REFLEX_C"]
+                                "NONMAGNIFIED": ["RED_DOT_A", "RED_DOT_B", "RED_DOT_C", "HOLO_A", "HOLO_B", "HOLO_C", "HOLO_D", "REFLEX_A", "REFLEX_B", "REFLEX_C"]
                             },
                             "underbarrels": ["LASER", "NONE"]
                         },
@@ -237,7 +237,7 @@
                         "attachments": {
                             "scopes": {
                                 "IRON": ["IRON"],
-                                "NM": ["RED_DOT_A", "RED_DOT_B", "RED_DOT_C", "HOLO_A", "HOLO_B", "HOLO_C", "HOLO_D", "REFLEX_A", "REFLEX_B", "REFLEX_C"]
+                                "NONMAGNIFIED": ["RED_DOT_A", "RED_DOT_B", "RED_DOT_C", "HOLO_A", "HOLO_B", "HOLO_C", "HOLO_D", "REFLEX_A", "REFLEX_B", "REFLEX_C"]
                             },
                             "barrels": ["FLASH", "COMP", "MUZZLE", "SUPP", "EXT", "NONE"],
                             "underbarrels": ["LASER", "NONE"]
@@ -275,7 +275,7 @@
                         "attachments": {
                             "scopes": {
                                 "IRON": ["IRON"],
-                                "NM": ["RED_DOT_A", "RED_DOT_B", "RED_DOT_C", "HOLO_A", "HOLO_B", "HOLO_C", "HOLO_D", "REFLEX_A", "REFLEX_B", "REFLEX_C"]
+                                "NONMAGNIFIED": ["RED_DOT_A", "RED_DOT_B", "RED_DOT_C", "HOLO_A", "HOLO_B", "HOLO_C", "HOLO_D", "REFLEX_A", "REFLEX_B", "REFLEX_C"]
                             },
                             "barrels": ["FLASH", "COMP", "MUZZLE", "SUPP", "EXT", "NONE"],
                             "grips": ["VERT", "ANGLED", "HORI"],
