@@ -12,7 +12,7 @@
             "gadgets": ["BARB", "BP", "DEP", "OBV", "IMP", "CF", "PROX"],
             "weapons": {
                 "primaries": {
-                    "COMMANDO 9": {
+                    "COMMANDO_9": {
                         "TYPE": "AR",
                         "DAMAGE": 36,
                         "FIRE_RATE": 780,
@@ -99,8 +99,8 @@
                         "DEST": "FULL",
                         "attachments": {
                             "scopes": {
-                                "IRON": ["IRON"],
-                                "NONMAGNIFIED": ["RED_DOT_A", "RED_DOT_B", "RED_DOT_C", "HOLO_A", "HOLO_B", "HOLO_C", "HOLO_D", "REFLEX_A", "REFLEX_B", "REFLEX_C"]
+                                "NONMAGNIFIED": ["RED_DOT_A", "RED_DOT_B", "RED_DOT_C", "HOLO_A", "HOLO_B", "HOLO_C", "HOLO_D", "REFLEX_A", "REFLEX_B", "REFLEX_C"],
+                                "IRON": ["IRON"]
                             },
                             "barrels": ["SUPP", "NONE"],
                             "grips": ["VERT", "ANGLED", "HORI"],
@@ -129,7 +129,7 @@
                     }
                 },
                 "secondaries": {
-                    "C75 AUTO": {
+                    "C75_AUTO": {
                         "TYPE": "MP",
                         "DAMAGE": 35,
                         "FIRE_RATE": 1000,
@@ -151,7 +151,7 @@
                             }
                         }
                     },
-                    "SUPER SHORTY": {
+                    "SUPER_SHORTY": {
                         "TYPE": "SHOTGUN",
                         "DAMAGE": 35,
                         "FIRE_RATE": 0,
@@ -224,7 +224,7 @@
                         }
                         
                     },
-                    "FMG-9": {
+                    "FMG_9": {
                         "TYPE": "SMG",
                         "DAMAGE": 34,
                         "FIRE_RATE": 800,
@@ -262,7 +262,7 @@
                     }
                 },
                 "secondaries": {
-                    "SMG 11": {
+                    "SMG_11": {
                         "TYPE": "MP",
                         "DAMAGE": 32,
                         "FIRE_RATE": 1270,
@@ -307,7 +307,7 @@
                             }
                         }
                     },
-                    "P226 MK 25": {
+                    "P226_MK_25": {
                         "TYPE": "HG",
                         "DAMAGE": 50,
                         "FIRE_RATE": 0,
