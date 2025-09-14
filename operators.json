@@ -23,26 +23,26 @@
                         "RSM": 0,
                         "DEST": "LOW",
                         "ATTACHMENTS": {
-                            "scopes": {
+                            "SCOPES": {
                                 "IRON": ["IRON"],
                                 "NONMAGNIFIED": ["RED_DOT_A", "RED_DOT_B", "RED_DOT_C", "HOLO_A", "HOLO_B", "HOLO_C", "HOLO_D", "REFLEX_A", "REFLEX_B", "REFLEX_C"]
                             },
-                            "barrels": ["FLASH", "COMP", "MUZZLE", "SUPP", "EXT", "NONE"],
-                            "grips": ["VERT", "ANGLED", "HORI"],
-                            "underbarrels": ["LASER", "NONE"]
+                            "BARRELS": ["FLASH", "COMP", "MUZZLE", "SUPP", "EXT", "NONE"],
+                            "GRIPS": ["VERT", "ANGLED", "HORI"],
+                            "UNDERBARRELS": ["LASER", "NONE"]
                         },
                         "modifiers": {
-                            "scopes": {
+                            "SCOPES": {
                                 "IRON": {
                                     "ADS": -0.02
                                 }
                             },
-                            "barrels": {
+                            "BARRELS": {
                                 "EXT": {
                                     "DAMAGE": 4
                                 }
                             },
-                            "grips": {
+                            "GRIPS": {
                                 "ANGLED": {
                                     "RELOAD": -0.5
                                 },
@@ -50,7 +50,7 @@
                                     "RSM": 0.05
                                 }
                             },
-                            "underbarrels": {
+                            "UNDERBARRELS": {
                                 "LASER": {
                                     "ADS": -0.05
                                 }
@@ -68,19 +68,19 @@
                         "RSM": 0,
                         "DEST": "FULL",
                         "ATTACHMENTS": {
-                            "scopes": {
+                            "SCOPES": {
                                 "IRON": ["IRON"],
                                 "NONMAGNIFIED": ["RED_DOT_A", "RED_DOT_B", "RED_DOT_C", "HOLO_A", "HOLO_B", "HOLO_C", "HOLO_D", "REFLEX_A", "REFLEX_B", "REFLEX_C"]
                             },
-                            "underbarrels": ["LASER", "NONE"]
+                            "UNDERBARRELS": ["LASER", "NONE"]
                         },
                         "modifiers": {
-                            "scopes": {
+                            "SCOPES": {
                                 "IRON": {
                                     "ADS": -0.01
                                 }
                             },
-                            "underbarrels": {
+                            "UNDERBARRELS": {
                                 "LASER": {
                                     "ADS": -0.03
                                 }
@@ -98,21 +98,21 @@
                         "RSM": 0,
                         "DEST": "FULL",
                         "ATTACHMENTS": {
-                            "scopes": {
+                            "SCOPES": {
                                 "NONMAGNIFIED": ["RED_DOT_A", "RED_DOT_B", "RED_DOT_C", "HOLO_A", "HOLO_B", "HOLO_C", "HOLO_D", "REFLEX_A", "REFLEX_B", "REFLEX_C"],
                                 "IRON": ["IRON"]
                             },
-                            "barrels": ["SUPP", "NONE"],
-                            "grips": ["VERT", "ANGLED", "HORI"],
-                            "underbarrels": ["LASER", "NONE"]
+                            "BARRELS": ["SUPP", "NONE"],
+                            "GRIPS": ["VERT", "ANGLED", "HORI"],
+                            "UNDERBARRELS": ["LASER", "NONE"]
                         },
                         "modifiers": {
-                            "scopes": {
+                            "SCOPES": {
                                 "IRON": {
                                     "ADS": -0.03
                                 }
                             },
-                            "grips": {
+                            "GRIPS": {
                                 "ANGLED": {
                                     "RELOAD": -0.66
                                 },
@@ -120,7 +120,7 @@
                                     "RSM": 0.05
                                 }
                             },
-                            "underbarrels": {
+                            "UNDERBARRELS": {
                                 "LASER": {
                                     "ADS": -0.05
                                 }
@@ -140,11 +140,11 @@
                         "RSM": 0,
                         "DEST": "LOW",
                         "ATTACHMENTS": {
-                            "barrels": ["SUPP", "NONE"],
-                            "underbarrels": ["LASER", "NONE"]
+                            "BARRELS": ["SUPP", "NONE"],
+                            "UNDERBARRELS": ["LASER", "NONE"]
                         },
                         "modifiers": {
-                            "underbarrels": {
+                            "UNDERBARRELS": {
                                 "LASER": {
                                     "ADS": -0.03
                                 }
@@ -162,19 +162,19 @@
                         "RSM": 0,
                         "DEST": "FULL",
                         "ATTACHMENTS": {
-                            "scopes": {
+                            "SCOPES": {
                                 "IRON": ["IRON"],
                                 "NONMAGNIFIED": ["RED_DOT_A", "RED_DOT_B", "RED_DOT_C", "HOLO_A", "HOLO_B", "HOLO_C", "HOLO_D", "REFLEX_A", "REFLEX_B", "REFLEX_C"]
                             },
-                            "underbarrels": ["LASER", "NONE"]
+                            "UNDERBARRELS": ["LASER", "NONE"]
                         },
                         "modifiers": {
-                            "scopes": {
+                            "SCOPES": {
                                 "IRON": {
                                     "ADS": -0.01
                                 }
                             },
-                            "underbarrels": {
+                            "UNDERBARRELS": {
                                 "LASER": {
                                     "ADS": -0.03
                                 }
@@ -204,19 +204,19 @@
                         "RSM": 0,
                         "DEST": "FULL",
                         "ATTACHMENTS": {
-                            "scopes": {
+                            "SCOPES": {
                                 "IRON": ["IRON"],
                                 "NONMAGNIFIED": ["RED_DOT_A", "RED_DOT_B", "RED_DOT_C", "HOLO_A", "HOLO_B", "HOLO_C", "HOLO_D", "REFLEX_A", "REFLEX_B", "REFLEX_C"]
                             },
-                            "underbarrels": ["LASER", "NONE"]
+                            "UNDERBARRELS": ["LASER", "NONE"]
                         },
                         "modifiers": {
-                            "scopes": {
+                            "SCOPES": {
                                 "IRON": {
                                     "ADS": -0.01
                                 }
                             },
-                            "underbarrels": {
+                            "UNDERBARRELS": {
                                 "LASER": {
                                     "ADS": -0.03
                                 }
@@ -235,25 +235,25 @@
                         "RSM": 0,
                         "DEST": "LOW",
                         "ATTACHMENTS": {
-                            "scopes": {
+                            "SCOPES": {
                                 "IRON": ["IRON"],
                                 "NONMAGNIFIED": ["RED_DOT_A", "RED_DOT_B", "RED_DOT_C", "HOLO_A", "HOLO_B", "HOLO_C", "HOLO_D", "REFLEX_A", "REFLEX_B", "REFLEX_C"]
                             },
-                            "barrels": ["FLASH", "COMP", "MUZZLE", "SUPP", "EXT", "NONE"],
-                            "underbarrels": ["LASER", "NONE"]
+                            "BARRELS": ["FLASH", "COMP", "MUZZLE", "SUPP", "EXT", "NONE"],
+                            "UNDERBARRELS": ["LASER", "NONE"]
                         },
                         "modifiers": {
-                            "scopes": {
+                            "SCOPES": {
                                 "IRON": {
                                     "ADS": -0.03
                                 }
                             },
-                            "barrels": {
+                            "BARRELS": {
                                 "EXT": {
                                     "DAMAGE": 4
                                 }
                             },
-                            "underbarrels": {
+                            "UNDERBARRELS": {
                                 "LASER": {
                                     "ADS": -0.04
                                 }
@@ -273,26 +273,26 @@
                         "RSM": 0,
                         "DEST": "LOW",
                         "ATTACHMENTS": {
-                            "scopes": {
+                            "SCOPES": {
                                 "IRON": ["IRON"],
                                 "NONMAGNIFIED": ["RED_DOT_A", "RED_DOT_B", "RED_DOT_C", "HOLO_A", "HOLO_B", "HOLO_C", "HOLO_D", "REFLEX_A", "REFLEX_B", "REFLEX_C"]
                             },
-                            "barrels": ["FLASH", "COMP", "MUZZLE", "SUPP", "EXT", "NONE"],
-                            "grips": ["VERT", "ANGLED", "HORI"],
-                            "underbarrels": ["LASER", "NONE"]
+                            "BARRELS": ["FLASH", "COMP", "MUZZLE", "SUPP", "EXT", "NONE"],
+                            "GRIPS": ["VERT", "ANGLED", "HORI"],
+                            "UNDERBARRELS": ["LASER", "NONE"]
                         },
                         "modifiers": {
-                            "scopes": {
+                            "SCOPES": {
                                 "IRON": {
                                     "ADS": -0.02
                                 }
                             },
-                            "barrels": {
+                            "BARRELS": {
                                 "EXT": {
                                     "DAMAGE": 3
                                 }
                             },
-                            "grips": {
+                            "GRIPS": {
                                 "ANGLED": {
                                     "RELOAD": -0.54
                                 },
@@ -300,7 +300,7 @@
                                     "RSM": 0.05
                                 }
                             },
-                            "underbarrels": {
+                            "UNDERBARRELS": {
                                 "LASER": {
                                     "ADS": -0.04
                                 }
@@ -318,11 +318,11 @@
                         "RSM": 0.05,
                         "DEST": "LOW",
                         "ATTACHMENTS": {
-                            "barrels": ["MUZZLE", "SUPP", "NONE"],
-                            "underbarrels": ["LASER", "NONE"]
+                            "BARRELS": ["MUZZLE", "SUPP", "NONE"],
+                            "UNDERBARRELS": ["LASER", "NONE"]
                         },
                         "modifiers": {
-                            "underbarrels": {
+                            "UNDERBARRELS": {
                                 "LASER": {
                                     "ADS": -0.02
                                 }
