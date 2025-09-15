@@ -3,6 +3,8 @@ import enum
 import json
 import random
 
+__version__ = '0.0.3'
+
 class Error:
     """class containing all errors
     """
