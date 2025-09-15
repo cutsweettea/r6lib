@@ -23,7 +23,7 @@ def main(args):
     if args.optype == "attacker":
         pass
     elif args.optype == "defender":
-        random_operator = r6._util.random_value_from_dict(defenders)[0]
+        random_operator = r6._util.random_kvp_from_dict(defenders)[0]
         operator = r6.Operator.get(random_operator)
         print(f'selected operator: {operator}')
         print(f'operator: {json.dumps(operator, indent=4)}')
