@@ -115,13 +115,348 @@ class _util:
         except KeyError: return None
 
     @staticmethod
-    def data_file_name():
-        """returns the name of the operator data file
+    def operator_data() -> dict:
+        """returns the operator data
 
         Returns:
-            str: literally just operators.json
+            dict: all the operator data
         """
-        return 'operators.json'
+        return {
+            "attack": {
+                
+            },
+            "defend": {
+                "SENTRY": {
+                    "type": ["SUP"],
+                    "difficulty": 1,
+                    "speed": 2,
+                    "health": 2,
+                    "ability": "SPECIAL",
+                    "gadgets": ["BARB", "BP", "DEP", "OBV", "IMP", "CF", "PROX"],
+                    "weapons": {
+                        "primaries": {
+                            "COMMANDO_9": {
+                                "TYPE": "AR",
+                                "DAMAGE": 36,
+                                "FIRE_RATE": 780,
+                                "MAG": 25,
+                                "MAX": 176,
+                                "ADS": 0.49,
+                                "RELOAD": 2.5,
+                                "RSM": 0,
+                                "DEST": "LOW",
+                                "ATTACHMENTS": {
+                                    "SCOPES": {
+                                        "IRON": ["IRON"],
+                                        "NONMAGNIFIED": ["RED_DOT_A", "RED_DOT_B", "RED_DOT_C", "HOLO_A", "HOLO_B", "HOLO_C", "HOLO_D", "REFLEX_A", "REFLEX_B", "REFLEX_C"]
+                                    },
+                                    "BARRELS": ["FLASH", "COMP", "MUZZLE", "SUPP", "EXT", "NONE"],
+                                    "GRIPS": ["VERT", "ANGLED", "HORI"],
+                                    "UNDERBARRELS": ["LASER", "NONE"]
+                                },
+                                "modifiers": {
+                                    "SCOPES": {
+                                        "IRON": {
+                                            "ADS": -0.02
+                                        }
+                                    },
+                                    "BARRELS": {
+                                        "EXT": {
+                                            "DAMAGE": 4
+                                        }
+                                    },
+                                    "GRIPS": {
+                                        "ANGLED": {
+                                            "RELOAD": -0.5
+                                        },
+                                        "HORI": {
+                                            "RSM": 0.05
+                                        }
+                                    },
+                                    "UNDERBARRELS": {
+                                        "LASER": {
+                                            "ADS": -0.05
+                                        }
+                                    }
+                                }
+                            },
+                            "M870": {
+                                "TYPE": "SHOTGUN",
+                                "DAMAGE": 42,
+                                "FIRE_RATE": 0,
+                                "MAG": 7,
+                                "MAX": 50,
+                                "ADS": 0.32,
+                                "RELOAD": 1.3,
+                                "RSM": 0,
+                                "DEST": "FULL",
+                                "ATTACHMENTS": {
+                                    "SCOPES": {
+                                        "IRON": ["IRON"],
+                                        "NONMAGNIFIED": ["RED_DOT_A", "RED_DOT_B", "RED_DOT_C", "HOLO_A", "HOLO_B", "HOLO_C", "HOLO_D", "REFLEX_A", "REFLEX_B", "REFLEX_C"]
+                                    },
+                                    "UNDERBARRELS": ["LASER", "NONE"]
+                                },
+                                "modifiers": {
+                                    "SCOPES": {
+                                        "IRON": {
+                                            "ADS": -0.01
+                                        }
+                                    },
+                                    "UNDERBARRELS": {
+                                        "LASER": {
+                                            "ADS": -0.03
+                                        }
+                                    }
+                                }
+                            },
+                            "TCSG12": {
+                                "TYPE": "SLUG",
+                                "DAMAGE": 75,
+                                "FIRE_RATE": 0,
+                                "MAG": 10,
+                                "MAX": 121,
+                                "ADS": 0.49,
+                                "RELOAD": 3.3,
+                                "RSM": 0,
+                                "DEST": "FULL",
+                                "ATTACHMENTS": {
+                                    "SCOPES": {
+                                        "NONMAGNIFIED": ["RED_DOT_A", "RED_DOT_B", "RED_DOT_C", "HOLO_A", "HOLO_B", "HOLO_C", "HOLO_D", "REFLEX_A", "REFLEX_B", "REFLEX_C"],
+                                        "IRON": ["IRON"]
+                                    },
+                                    "BARRELS": ["SUPP", "NONE"],
+                                    "GRIPS": ["VERT", "ANGLED", "HORI"],
+                                    "UNDERBARRELS": ["LASER", "NONE"]
+                                },
+                                "modifiers": {
+                                    "SCOPES": {
+                                        "IRON": {
+                                            "ADS": -0.03
+                                        }
+                                    },
+                                    "GRIPS": {
+                                        "ANGLED": {
+                                            "RELOAD": -0.66
+                                        },
+                                        "HORI": {
+                                            "RSM": 0.05
+                                        }
+                                    },
+                                    "UNDERBARRELS": {
+                                        "LASER": {
+                                            "ADS": -0.05
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "secondaries": {
+                            "C75_AUTO": {
+                                "TYPE": "MP",
+                                "DAMAGE": 35,
+                                "FIRE_RATE": 1000,
+                                "MAG": 26,
+                                "MAX": 131,
+                                "ADS": 0.34,
+                                "RELOAD": 2.9,
+                                "RSM": 0,
+                                "DEST": "LOW",
+                                "ATTACHMENTS": {
+                                    "BARRELS": ["SUPP", "NONE"],
+                                    "UNDERBARRELS": ["LASER", "NONE"]
+                                },
+                                "modifiers": {
+                                    "UNDERBARRELS": {
+                                        "LASER": {
+                                            "ADS": -0.03
+                                        }
+                                    }
+                                }
+                            },
+                            "SUPER_SHORTY": {
+                                "TYPE": "SHOTGUN",
+                                "DAMAGE": 35,
+                                "FIRE_RATE": 0,
+                                "MAG": 3,
+                                "MAX": 46,
+                                "ADS": 0.32,
+                                "RELOAD": 1.55,
+                                "RSM": 0,
+                                "DEST": "FULL",
+                                "ATTACHMENTS": {
+                                    "SCOPES": {
+                                        "IRON": ["IRON"],
+                                        "NONMAGNIFIED": ["RED_DOT_A", "RED_DOT_B", "RED_DOT_C", "HOLO_A", "HOLO_B", "HOLO_C", "HOLO_D", "REFLEX_A", "REFLEX_B", "REFLEX_C"]
+                                    },
+                                    "UNDERBARRELS": ["LASER", "NONE"]
+                                },
+                                "modifiers": {
+                                    "SCOPES": {
+                                        "IRON": {
+                                            "ADS": -0.01
+                                        }
+                                    },
+                                    "UNDERBARRELS": {
+                                        "LASER": {
+                                            "ADS": -0.03
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "SMOKE": {
+                    "type": ["AE", "TRAP"],
+                    "difficulty": 2,
+                    "speed": 2,
+                    "health": 2,
+                    "ability": "GAS",
+                    "gadgets": ["BARB", "PROX"],
+                    "weapons": {
+                        "primaries": {
+                            "M590A1": {
+                                "TYPE": "SHOTGUN",
+                                "DAMAGE": 36,
+                                "FIRE_RATE": 0,
+                                "MAG": 7,
+                                "MAX": 50,
+                                "ADS": 0.32,
+                                "RELOAD": 1.6,
+                                "RSM": 0,
+                                "DEST": "FULL",
+                                "ATTACHMENTS": {
+                                    "SCOPES": {
+                                        "IRON": ["IRON"],
+                                        "NONMAGNIFIED": ["RED_DOT_A", "RED_DOT_B", "RED_DOT_C", "HOLO_A", "HOLO_B", "HOLO_C", "HOLO_D", "REFLEX_A", "REFLEX_B", "REFLEX_C"]
+                                    },
+                                    "UNDERBARRELS": ["LASER", "NONE"]
+                                },
+                                "modifiers": {
+                                    "SCOPES": {
+                                        "IRON": {
+                                            "ADS": -0.01
+                                        }
+                                    },
+                                    "UNDERBARRELS": {
+                                        "LASER": {
+                                            "ADS": -0.03
+                                        }
+                                    }
+                                }
+                                
+                            },
+                            "FMG_9": {
+                                "TYPE": "SMG",
+                                "DAMAGE": 34,
+                                "FIRE_RATE": 800,
+                                "MAG": 30,
+                                "MAX": 181,
+                                "ADS": 0.44,
+                                "RELOAD": 2.96,
+                                "RSM": 0,
+                                "DEST": "LOW",
+                                "ATTACHMENTS": {
+                                    "SCOPES": {
+                                        "IRON": ["IRON"],
+                                        "NONMAGNIFIED": ["RED_DOT_A", "RED_DOT_B", "RED_DOT_C", "HOLO_A", "HOLO_B", "HOLO_C", "HOLO_D", "REFLEX_A", "REFLEX_B", "REFLEX_C"]
+                                    },
+                                    "BARRELS": ["FLASH", "COMP", "MUZZLE", "SUPP", "EXT", "NONE"],
+                                    "UNDERBARRELS": ["LASER", "NONE"]
+                                },
+                                "modifiers": {
+                                    "SCOPES": {
+                                        "IRON": {
+                                            "ADS": -0.03
+                                        }
+                                    },
+                                    "BARRELS": {
+                                        "EXT": {
+                                            "DAMAGE": 4
+                                        }
+                                    },
+                                    "UNDERBARRELS": {
+                                        "LASER": {
+                                            "ADS": -0.04
+                                        }
+                                    }
+                                }
+                            }
+                        },
+                        "secondaries": {
+                            "SMG_11": {
+                                "TYPE": "MP",
+                                "DAMAGE": 32,
+                                "FIRE_RATE": 1270,
+                                "MAG": 16,
+                                "MAX": 113,
+                                "ADS": 0.36,
+                                "RELOAD": 2.7,
+                                "RSM": 0,
+                                "DEST": "LOW",
+                                "ATTACHMENTS": {
+                                    "SCOPES": {
+                                        "IRON": ["IRON"],
+                                        "NONMAGNIFIED": ["RED_DOT_A", "RED_DOT_B", "RED_DOT_C", "HOLO_A", "HOLO_B", "HOLO_C", "HOLO_D", "REFLEX_A", "REFLEX_B", "REFLEX_C"]
+                                    },
+                                    "BARRELS": ["FLASH", "COMP", "MUZZLE", "SUPP", "EXT", "NONE"],
+                                    "GRIPS": ["VERT", "ANGLED", "HORI"],
+                                    "UNDERBARRELS": ["LASER", "NONE"]
+                                },
+                                "modifiers": {
+                                    "SCOPES": {
+                                        "IRON": {
+                                            "ADS": -0.02
+                                        }
+                                    },
+                                    "BARRELS": {
+                                        "EXT": {
+                                            "DAMAGE": 3
+                                        }
+                                    },
+                                    "GRIPS": {
+                                        "ANGLED": {
+                                            "RELOAD": -0.54
+                                        },
+                                        "HORI": {
+                                            "RSM": 0.05
+                                        }
+                                    },
+                                    "UNDERBARRELS": {
+                                        "LASER": {
+                                            "ADS": -0.04
+                                        }
+                                    }
+                                }
+                            },
+                            "P226_MK_25": {
+                                "TYPE": "HG",
+                                "DAMAGE": 50,
+                                "FIRE_RATE": 0,
+                                "MAG": 15,
+                                "MAX": 97,
+                                "ADS": 0.22,
+                                "RELOAD": 2.1,
+                                "RSM": 0.05,
+                                "DEST": "LOW",
+                                "ATTACHMENTS": {
+                                    "BARRELS": ["MUZZLE", "SUPP", "NONE"],
+                                    "UNDERBARRELS": ["LASER", "NONE"]
+                                },
+                                "modifiers": {
+                                    "UNDERBARRELS": {
+                                        "LASER": {
+                                            "ADS": -0.02
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
 
     @staticmethod
     def get_attachment_category_from_type(attachment_type):
@@ -997,13 +1332,12 @@ class Operator:
         if not isinstance(operator_type, Operator.OperatorType):
             raise TypeError(f'operator_type must be of type str or OperatorType, not {type(operator_type).__name__}')
 
-        with open(_util.data_file_name(), 'r') as f:
-            categorized_operators = json.loads(f.read())
-            for c in categorized_operators:
-                for n, d in categorized_operators[c].items():
-                    if n != operator_type.name: continue
+        categorized_operators = _util.operator_data()
+        for c in categorized_operators:
+            for n, d in categorized_operators[c].items():
+                if n != operator_type.name: continue
 
-                    return Operator.load(operator_type, c, d)
+                return Operator.load(operator_type, c, d)
 
 class Finished:
     """class containing everything about finished data
