@@ -110,7 +110,7 @@ class _util:
             'HORI': Weapon.Attachment.GripAttachment.HORI,
             'VERT': Weapon.Attachment.GripAttachment.VERT,
             'LASER': Weapon.Attachment.UnderbarrelAttachment.LASER,
-            'NONE': Weapon.Attachment.UnderbarrelAttachment.NONE
+            'NONE': Weapon.Attachment.GenericAttachment.NONE
         }
 
         try: return type_map[attachment]
@@ -844,6 +844,11 @@ class Weapon:
             LASER = "Laser sight"
             NONE = "None"
 
+        class GenericAttachment(AttachmentType, enum.Enum):
+            """child enum of AttachmentType for underbarrel attachments, with corresponding labels
+            """
+            NONE = "None"
+
     class ModifierManager(Portable):
         class ModifiableWeaponAttribute(enum.Enum):
             """enum of modifiable weapon attributes, with corresponding labels and types
@@ -910,24 +915,64 @@ class Weapon:
                 TypeError: modifier list within modifiers is not of type dict
                 TypeError: modifiers for any attachment is not of type dict
             """
+            self._modifiers = {}
             if len(modifiers) == 0: 
                 return
             
-            self._modifiers = {}
             for _, mods in modifiers.items():
                 if not isinstance(mods, dict):
                     raise TypeError(f'modifiers for each attachment category must be of type dict, not {type(mods).__name__}')
 
                 for a, m in mods.items():
                     attach_type = _util.attachment_type_from_string(a)
+                    print(f'a={attach_type}, m={m}')
                     if not isinstance(m, dict):
-                        raise TypeError(f'modifiers for each attachment type must be of type dict, not {type(mods).__name__}')
+                        raise TypeError(f'modifiers for each attachment type must be of type dict, not {type(m).__name__}')
                     
                     modifier_list = []
                     for v, mod in m.items():
                         modded_value = self.ModifiableWeaponAttribute[v]
                         modifier_list.append(self.AttributeModifier(modded_value, mod, attach_type))
                     self._modifiers.update({attach_type: modifier_list})
+
+        def export(self, **options):
+            mods = {}
+            if 'attachments' in options:
+                attachments = options['attachments']
+                aa = attachments.get_all_attachments()
+                for _, l in self._modifiers.items():
+                    for m in l:
+                        if(m.source not in aa):
+                            continue
+                        
+                        mods.update({
+                            m.source.name: {
+                                m.modified_attribute.name: m.modifier
+                            }
+                        })
+            else:
+                for _, l in self._modifiers.items():
+                    for m in l:
+                        mods.update({
+                            m.source.name: {
+                                m.modified_attribute.name: m.modifier
+                            }
+                        })
+                    
+            return mods
+        
+        @staticmethod
+        def import_from(data, **options):
+            if isinstance(data, str):
+                data = json.loads(data)
+
+            if not isinstance(data, dict):
+                raise TypeError(f'data must be a dict or a dict in a json string')
+            
+            print(f'data={data}')
+            mgr = Weapon.ModifierManager(**data)
+            print(mgr.get_all_modifiers())
+            exit(0)
 
         def has_modifier(self, attachment_type) -> bool:
             """gets whether there are any modifiers for the given AttachmentType
@@ -1392,16 +1437,27 @@ class Finished:
                         dict: _AttachmentLoadout data in jsonable format
                     """
                     return {c.name[:-1]:a.name for c, a in self._attachments.items()}
-                
+                                
                 @staticmethod
                 def import_from(data, **options):
+                    if isinstance(data, str):
+                        data = json.loads(data)
+
+                    if not isinstance(data, dict):
+                        raise TypeError(f'data must be a dict or a dict in a json string')
+
                     new_attachments = {}
                     for c, a in data.items():
                         attach_type = _util.attachment_type_from_string(a)
                         new_attachments.update({c + 'S': attach_type})
 
-                    print(f'new_attachments: {new_attachments}')
                     return Finished._Weapon._Loadout._AttachmentLoadout(**new_attachments)
+                
+                def get_all_attachments(self) -> list[Weapon.Attachment.AttachmentType]:
+                    attachments = []
+                    for _, a in self._attachments.items():
+                        attachments.append(a)
+                    return attachments
 
                 def _get_attachment_by_category(self, category) -> Weapon.Attachment.AttachmentType:
                     """gets an attachment currently equip by AttachmentCategory
@@ -1488,6 +1544,12 @@ class Finished:
             
             @staticmethod
             def import_from(data, **options):
+                if isinstance(data, str):
+                    data = json.loads(data)
+
+                if not isinstance(data, dict):
+                    raise TypeError(f'data must be a dict or a dict in a json string')
+                
                 primary_data = data['primary']
                 secondary_data = data['secondary']
 
@@ -1582,10 +1644,6 @@ class Finished:
             Returns:
                 dict: _Weapon data in jsonable format
             """
-            modifiers = {}
-            for m in self.get_available_modifiers():
-                modifiers.update(m.export())
-
             return {
                 'NAME': self.weapon_type.name,
                 'TYPE': self.weapon_category.name,
@@ -1598,11 +1656,17 @@ class Finished:
                 'RSM': self._base_rsm,
                 'DEST': self.destruction.name,
                 'ATTACHMENTS': self.attachments.export(),
-                'MODIFIERS': modifiers
+                'MODIFIERS': self.modifiers.export(attachments=self.attachments)
             }
         
         @staticmethod
         def import_from(data, **options):
+            if isinstance(data, str):
+                data = json.loads(data)
+
+            if not isinstance(data, dict):
+                raise TypeError(f'data must be a dict or a dict in a json string')
+
             return Finished._Weapon(
                 Weapon.WeaponCategory[data['TYPE']],
                 Weapon.WeaponType[data['NAME']],
@@ -1615,7 +1679,7 @@ class Finished:
                 data['RSM'],
                 Weapon.Destruction[data['DEST']],
                 Finished._Weapon._Loadout._AttachmentLoadout.import_from(data['ATTACHMENTS']),
-                Weapon.ModifierManager(modifiers=data['MODIFIERS'])
+                Weapon.ModifierManager.import_from(data['MODIFIERS'])
             )
 
         def __repr__(self):
@@ -1954,6 +2018,12 @@ class Finished:
                 _Operator: finished operator class
             """
 
+            if isinstance(data, str):
+                data = json.loads(data)
+
+            if not isinstance(data, dict):
+                raise TypeError(f'data must be a dict or a dict in a json string')
+
             op_type = _util.try_cast_enums(data['name'], Operator.AttackOperatorType, Operator.DefendOperatorType)
             roles = [Operator.Role[r] for r in data['type']]
             ability = _util.try_cast_enums(data['ability'], Operator.AttackerAbility, Operator.DefenderAbility)
@@ -1962,7 +2032,7 @@ class Finished:
             weapon_data = data['weapons']
             weapons = Finished._Weapon._Loadout.import_from(weapon_data)
 
-            op = Finished._Operator(
+            return Finished._Operator(
                 op_type,
                 roles,
                 data['difficulty'],
@@ -1972,8 +2042,6 @@ class Finished:
                 gadget,
                 weapons
             )
-            print(op.export())
-            exit(0)
         
         def get_primary(self):
             """gets operators primary
