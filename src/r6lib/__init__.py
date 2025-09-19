@@ -3,13 +3,39 @@ import enum
 import json
 import random
 
-__version__ = '0.0.3'
+__version__ = '0.0.4'
 
 class Error:
     """class containing all errors
     """
     class AttachmentNotAvailableError(Exception):
         """error for when an AttachmentType isn't available on a Weapon
+        """
+        pass
+    
+    class GadgetNotAvailableError(Exception):
+        """error for when a OperatorGadget isn't available in a gadget loadout
+        """
+        pass
+
+    class NoExportImplemented(Exception): 
+        """error for when an export function isn't declared for a Portable class
+        """
+        pass
+    class NotExportable(Exception): 
+        """error for when a program cannot export the class' data
+        """
+        pass
+    class NoImportImplemented(Exception): 
+        """error for when an export function isn't declared for a Portable class
+        """
+        pass
+    class NotImportable(Exception): 
+        """error for when a program cannot import the class' data
+        """
+        pass
+    class NoRandomizeImplemented(Exception):
+        """error for when a randomize function isn't declared for a Randomizable class
         """
         pass
 
@@ -54,19 +80,19 @@ class _util:
         Returns:
             Enum: matching ScopeAttachment for the given ScopeCategory
         """
-        if category == Weapon.Attachment.ScopeCategory.IRON:
+        if category == Weapon.Attachment.ScopeCategory.IRON or category == Weapon.Attachment.ScopeCategory.IRON.name:
             return Weapon.Attachment.IronSights
-        elif category == Weapon.Attachment.ScopeCategory.NONMAGNIFIED:
+        elif category == Weapon.Attachment.ScopeCategory.NONMAGNIFIED or category == Weapon.Attachment.ScopeCategory.NONMAGNIFIED.name:
             return Weapon.Attachment.NonmagnifiedScope
-        elif category == Weapon.Attachment.ScopeCategory.MAGNIFIED:
+        elif category == Weapon.Attachment.ScopeCategory.MAGNIFIED or category == Weapon.Attachment.ScopeCategory.MAGNIFIED.name:
             return Weapon.Attachment.MagnifiedScope
-        elif category == Weapon.Attachment.ScopeCategory.TELESCOPIC:
+        elif category == Weapon.Attachment.ScopeCategory.TELESCOPIC or category == Weapon.Attachment.ScopeCategory.TELESCOPIC.name:
             return Weapon.Attachment.TelescopicScope
         else:
-            raise TypeError(f'Value of type {type(category).__name__} for category not valid')
+            raise TypeError(f'Value {category} of type {type(category).__name__} for category not valid')
 
     @staticmethod
-    def attachment_type_from_string(attachment: str):
+    def get_attachment_type_from_string(attachment: str):
         """gets a matching AttachmentType from the given attachment string
 
         Args:
@@ -110,11 +136,29 @@ class _util:
             'HORI': Weapon.Attachment.GripAttachment.HORI,
             'VERT': Weapon.Attachment.GripAttachment.VERT,
             'LASER': Weapon.Attachment.UnderbarrelAttachment.LASER,
-            'NONE': Weapon.Attachment.UnderbarrelAttachment.NONE
+            'NONE': Weapon.Attachment.GenericAttachment.NONE
         }
 
         try: return type_map[attachment]
         except KeyError: return None
+
+    @staticmethod
+    def try_cast_enums(key: str, *enums) -> any:
+        """static method to cast the key passed into every enum class passed, returning if there's no error thrown
+
+        Args:
+            key (str): key to use to find matching keys
+
+        Returns:
+            any | None: either returns the object in whatever enum successfully cast first, or None if no new object was created
+        """
+        for e in enums:
+            try:
+                new_obj = e[key]
+            except:
+                continue
+            return new_obj
+        return None
 
     @staticmethod
     def operator_data() -> dict:
@@ -124,11 +168,10 @@ class _util:
             dict: all the operator data
         """
         return {
-            "attack": {
-                
-            },
-            "defend": {
-                "SENTRY": {
+            "attack": [],
+            "defend": [
+                {
+                    "name": "SENTRY",
                     "type": ["SUP"],
                     "difficulty": 1,
                     "speed": 2,
@@ -136,8 +179,9 @@ class _util:
                     "ability": "SPECIAL",
                     "gadgets": ["BARB", "BP", "DEP", "OBV", "IMP", "CF", "PROX"],
                     "weapons": {
-                        "primaries": {
-                            "COMMANDO_9": {
+                        "primaries": [
+                            {
+                                "NAME": "COMMANDO_9",
                                 "TYPE": "AR",
                                 "DAMAGE": 36,
                                 "FIRE_RATE": 780,
@@ -157,32 +201,25 @@ class _util:
                                     "UNDERBARRELS": ["LASER", "NONE"]
                                 },
                                 "modifiers": {
-                                    "SCOPES": {
-                                        "IRON": {
-                                            "ADS": -0.02
-                                        }
+                                    "IRON": {
+                                        "ADS": -0.02
                                     },
-                                    "BARRELS": {
-                                        "EXT": {
-                                            "DAMAGE": 4
-                                        }
+                                    "EXT": {
+                                        "DAMAGE": 4
                                     },
-                                    "GRIPS": {
-                                        "ANGLED": {
-                                            "RELOAD": -0.5
-                                        },
-                                        "HORI": {
-                                            "RSM": 0.05
-                                        }
+                                    "ANGLED": {
+                                        "RELOAD": -0.5
                                     },
-                                    "UNDERBARRELS": {
-                                        "LASER": {
-                                            "ADS": -0.05
-                                        }
+                                    "HORI": {
+                                        "RSM": 0.05
+                                    },
+                                    "LASER": {
+                                        "ADS": -0.05
                                     }
                                 }
                             },
-                            "M870": {
+                            {
+                                "NAME": "M870",
                                 "TYPE": "SHOTGUN",
                                 "DAMAGE": 42,
                                 "FIRE_RATE": 0,
@@ -200,19 +237,16 @@ class _util:
                                     "UNDERBARRELS": ["LASER", "NONE"]
                                 },
                                 "modifiers": {
-                                    "SCOPES": {
-                                        "IRON": {
-                                            "ADS": -0.01
-                                        }
+                                    "IRON": {
+                                        "ADS": -0.01
                                     },
-                                    "UNDERBARRELS": {
-                                        "LASER": {
-                                            "ADS": -0.03
-                                        }
+                                    "LASER": {
+                                        "ADS": -0.03
                                     }
                                 }
                             },
-                            "TCSG12": {
+                            {
+                                "NAME": "TCSG12",
                                 "TYPE": "SLUG",
                                 "DAMAGE": 75,
                                 "FIRE_RATE": 0,
@@ -232,29 +266,24 @@ class _util:
                                     "UNDERBARRELS": ["LASER", "NONE"]
                                 },
                                 "modifiers": {
-                                    "SCOPES": {
-                                        "IRON": {
-                                            "ADS": -0.03
-                                        }
+                                    "IRON": {
+                                        "ADS": -0.03
                                     },
-                                    "GRIPS": {
-                                        "ANGLED": {
-                                            "RELOAD": -0.66
-                                        },
-                                        "HORI": {
-                                            "RSM": 0.05
-                                        }
+                                    "ANGLED": {
+                                        "RELOAD": -0.66
                                     },
-                                    "UNDERBARRELS": {
-                                        "LASER": {
-                                            "ADS": -0.05
-                                        }
+                                    "HORI": {
+                                        "RSM": 0.05
+                                    },
+                                    "LASER": {
+                                        "ADS": -0.05
                                     }
                                 }
                             }
-                        },
-                        "secondaries": {
-                            "C75_AUTO": {
+                        ],
+                        "secondaries": [
+                            {
+                                "NAME": "C75_AUTO",
                                 "TYPE": "MP",
                                 "DAMAGE": 35,
                                 "FIRE_RATE": 1000,
@@ -269,14 +298,13 @@ class _util:
                                     "UNDERBARRELS": ["LASER", "NONE"]
                                 },
                                 "modifiers": {
-                                    "UNDERBARRELS": {
-                                        "LASER": {
-                                            "ADS": -0.03
-                                        }
+                                    "LASER": {
+                                        "ADS": -0.03
                                     }
                                 }
                             },
-                            "SUPER_SHORTY": {
+                            {
+                                "NAME": "SUPER_SHORTY",
                                 "TYPE": "SHOTGUN",
                                 "DAMAGE": 35,
                                 "FIRE_RATE": 0,
@@ -294,22 +322,19 @@ class _util:
                                     "UNDERBARRELS": ["LASER", "NONE"]
                                 },
                                 "modifiers": {
-                                    "SCOPES": {
-                                        "IRON": {
-                                            "ADS": -0.01
-                                        }
+                                    "IRON": {
+                                        "ADS": -0.01
                                     },
-                                    "UNDERBARRELS": {
-                                        "LASER": {
-                                            "ADS": -0.03
-                                        }
+                                    "LASER": {
+                                        "ADS": -0.03
                                     }
                                 }
                             }
-                        }
+                        ]
                     }
                 },
-                "SMOKE": {
+                {
+                    "name": "SMOKE",
                     "type": ["AE", "TRAP"],
                     "difficulty": 2,
                     "speed": 2,
@@ -317,8 +342,9 @@ class _util:
                     "ability": "GAS",
                     "gadgets": ["BARB", "PROX"],
                     "weapons": {
-                        "primaries": {
-                            "M590A1": {
+                        "primaries": [
+                            {
+                                "NAME": "M590A1",
                                 "TYPE": "SHOTGUN",
                                 "DAMAGE": 36,
                                 "FIRE_RATE": 0,
@@ -336,20 +362,17 @@ class _util:
                                     "UNDERBARRELS": ["LASER", "NONE"]
                                 },
                                 "modifiers": {
-                                    "SCOPES": {
-                                        "IRON": {
-                                            "ADS": -0.01
-                                        }
+                                    "IRON": {
+                                        "ADS": -0.01
                                     },
-                                    "UNDERBARRELS": {
-                                        "LASER": {
-                                            "ADS": -0.03
-                                        }
+                                    "LASER": {
+                                        "ADS": -0.03
                                     }
                                 }
                                 
                             },
-                            "FMG_9": {
+                            {
+                                "NAME": "FMG_9",
                                 "TYPE": "SMG",
                                 "DAMAGE": 34,
                                 "FIRE_RATE": 800,
@@ -368,26 +391,21 @@ class _util:
                                     "UNDERBARRELS": ["LASER", "NONE"]
                                 },
                                 "modifiers": {
-                                    "SCOPES": {
-                                        "IRON": {
-                                            "ADS": -0.03
-                                        }
+                                    "IRON": {
+                                        "ADS": -0.03
                                     },
-                                    "BARRELS": {
-                                        "EXT": {
-                                            "DAMAGE": 4
-                                        }
+                                    "EXT": {
+                                        "DAMAGE": 4
                                     },
-                                    "UNDERBARRELS": {
-                                        "LASER": {
-                                            "ADS": -0.04
-                                        }
+                                    "LASER": {
+                                        "ADS": -0.04
                                     }
                                 }
                             }
-                        },
-                        "secondaries": {
-                            "SMG_11": {
+                        ],
+                        "secondaries": [
+                            {
+                                "NAME": "SMG_11",
                                 "TYPE": "MP",
                                 "DAMAGE": 32,
                                 "FIRE_RATE": 1270,
@@ -407,32 +425,25 @@ class _util:
                                     "UNDERBARRELS": ["LASER", "NONE"]
                                 },
                                 "modifiers": {
-                                    "SCOPES": {
-                                        "IRON": {
-                                            "ADS": -0.02
-                                        }
+                                    "IRON": {
+                                        "ADS": -0.02
                                     },
-                                    "BARRELS": {
-                                        "EXT": {
-                                            "DAMAGE": 3
-                                        }
+                                    "EXT": {
+                                        "DAMAGE": 3
                                     },
-                                    "GRIPS": {
-                                        "ANGLED": {
-                                            "RELOAD": -0.54
-                                        },
-                                        "HORI": {
-                                            "RSM": 0.05
-                                        }
+                                    "ANGLED": {
+                                        "RELOAD": -0.54
                                     },
-                                    "UNDERBARRELS": {
-                                        "LASER": {
-                                            "ADS": -0.04
-                                        }
+                                    "HORI": {
+                                        "RSM": 0.05
+                                    },
+                                    "LASER": {
+                                        "ADS": -0.04
                                     }
                                 }
                             },
-                            "P226_MK_25": {
+                            {
+                                "NAME": "P226_MK_25",
                                 "TYPE": "HG",
                                 "DAMAGE": 50,
                                 "FIRE_RATE": 0,
@@ -447,17 +458,15 @@ class _util:
                                     "UNDERBARRELS": ["LASER", "NONE"]
                                 },
                                 "modifiers": {
-                                    "UNDERBARRELS": {
-                                        "LASER": {
-                                            "ADS": -0.02
-                                        }
+                                    "LASER": {
+                                        "ADS": -0.02
                                     }
                                 }
                             }
-                        }
+                        ]
                     }
                 }
-            }
+            ]
         }
 
     @staticmethod
@@ -473,8 +482,9 @@ class _util:
         Returns:
             Enum: matching AttachmentType for the given AttachmentType
         """
-        if not isinstance(attachment_type, Weapon.Attachment.AttachmentType):
-            raise TypeError(f'attachment_type must be of type AttachmentType, not {type(attachment_type).__name__}')
+        #print(f'attachment_type={attachment_type}, type(attachment_type)={type(attachment_type).__name__}')
+        if not isinstance(attachment_type, Weapon.Attachment.AttachmentType) and not isinstance(attachment_type, str):
+            raise TypeError(f'attachment_type must be of type AttachmentType or str, not {type(attachment_type).__name__}')
         
         type_map = {
             Weapon.Attachment.IronSights.IRON: Weapon.Attachment.AttachmentCategory.SCOPES,
@@ -511,23 +521,38 @@ class _util:
         return type_map[attachment_type]
 
 
+class Randomizable:
+    """parent class for any class that can be used to create randomized (finished) classes
+    """
+    def __init__(self):
+        """constructor for Randomizable class
+        """
+        pass
+    
+    def randomize(self):
+        """randomize whatever information needs to be and return it
+        """
+        raise Error.NoRandomizeImplemented(f'randomize method hasn\'t been implemented on the class side')
+
+
 class Portable:
     """parent class for any class that can import and export data into json parsable data
     """
     def export(self, **options):
         """exports the data within this class into json parsable data
         """
-        pass
+        raise Error.NoExportImplemented(f'this feature is not implemented on the class side')
 
-    def import_from(self, data, **options):
-        """imports information from data variable
+    @staticmethod
+    def import_from(data, **options):
+        """static method for importing information from data variable
 
         Args:
             any: data being imported into the class
         """
-        pass
+        raise Error.NoImportImplemented(f'this feature is not implemented on the class side')
 
-class Weapon:
+class Weapon(Portable):
     """class containing all functionality for weapon data
     """
     class WeaponCategory(enum.Enum):
@@ -568,7 +593,7 @@ class Weapon:
     class Loadout:
         """class related to storage of loadout data for weapons
         """
-        class AttachmentLoadout:
+        class AttachmentLoadout(Portable):
             """class related to storage of loadout data for attachments
             """
             def __init__(self, **attachments):
@@ -586,18 +611,54 @@ class Weapon:
                         raise TypeError(f'attachment list ({d}) must be of type list or dict, not {type(d).__name__}')
 
                     if isinstance(d, list):
+                        attach_list = []
                         for a in range(len(d)):
-                            attachment = d[a]
-                            if not isinstance(attachment, Weapon.Attachment.AttachmentType):
-                                raise TypeError(f'attachment {attachment} at index {a} must be of type AttachmentType, not {type(attachment).__name__}')
+                            attachment = _util.get_attachment_type_from_string(d[a])
+                            attach_list.append(attachment)
+                        self._attachments.update({category: attach_list})
+                        setattr(self, category.name.lower(), attach_list)
                     else:
-                        for scope_category, _ in d.items():
-                            if not isinstance(scope_category, Weapon.Attachment.ScopeCategory):
-                                raise TypeError(f'scope_category ({scope_category}) must be of type ScopeCategory, not {type(scope_category).__name__}')
-                            
-                    category = Weapon.Attachment.AttachmentCategory[c]
-                    self._attachments.update({category: d})
-                    setattr(self, category.name.lower(), d)
+                        scope_dict = {}
+                        for sc, sd in d.items():
+                            scope_category = Weapon.Attachment.ScopeCategory[sc]
+                            scope_dict.update({scope_category: [_util.get_attachment_type_from_string(s) for s in sd]})
+                        self._attachments.update({category: scope_dict})
+                        setattr(self, category.name.lower(), scope_dict)
+
+            def export(self):
+                """export method from Portable
+
+                Returns:
+                    dict: AttachmentLoadout data in jsonable format
+                """
+                data = {}
+                for ac, al in self._attachments.items():
+                    if isinstance(al, dict):
+                        scope_data = {}
+                        for sc, sl in al.items():
+                            scope_data.update({sc.name: [s.name for s in sl]})
+                        data.update({ac.name: scope_data})
+                    elif isinstance(al, list):
+                        data.update({ac.name: [a.name for a in al]})
+                    else:
+                        raise TypeError(f'attachment lists for any attachment category must be of type dict or list, not {type(al).__name__}')
+
+                return data
+
+            @staticmethod
+            def import_from(data, **options):
+                """static import method from Portable
+
+                Args:
+                    data (any): data to import from
+
+                Returns:
+                    AttachmentLoadout: attachment loadout class with data imported
+                """
+                if not isinstance(data, dict):
+                    raise TypeError(f'data must be of type dict, not {type(data).__name__}')
+                
+                return Weapon.Loadout.AttachmentLoadout(**data)
 
             def _get_attachments_by_category(self, category) -> list:
                 """gets all attachments available for a given AttachmentCategory
@@ -650,88 +711,132 @@ class Weapon:
                     list: list containing AttachmentType's for the UNDERBARRELS AttachmentType
                 """
                 return self._get_attachments_by_category(Weapon.Attachment.AttachmentCategory.UNDERBARRELS)
+            
+            def __repr__(self) -> str:
+                """representation for AttachmentLoadout class
 
-        def __init__(self, primaries: list, secondaries: list):
-            """constructor for Loadout class
+                Returns:
+                    str: stringified AttachmentLoadout
+                """
+                return f'AttachmentLoadout<_attachments={self._attachments}>'
+            
+        class WeaponLoadout(Portable, Randomizable):
+            def __init__(self, primaries: list, secondaries: list):
+                """constructor for Loadout class
 
-            Args:
-                primaries (list): list of Weapon types for primaries
-                secondaries (list): list of Weapon types for secondaries
+                Args:
+                    primaries (list): list of Weapon types for primaries
+                    secondaries (list): list of Weapon types for secondaries
 
-            Raises:
-                TypeError: if any value in primaries is not of type Weapon
-                TypeError: if any value in secondaries is not of type Weapon
-            """
-            for p in range(len(primaries)):
-                primary = primaries[p]
-                if not isinstance(primary, Weapon): raise TypeError(f'Primary at index {p} must be of type Weapon, not {type(primary).__name__}')
+                Raises:
+                    TypeError: if any value in primaries is not of type Weapon
+                    TypeError: if any value in secondaries is not of type Weapon
+                """
+                for p in range(len(primaries)):
+                    primary = primaries[p]
+                    if not isinstance(primary, Weapon): raise TypeError(f'Primary at index {p} must be of type Weapon, not {type(primary).__name__}')
 
-            for p in range(len(secondaries)):
-                secondary = secondaries[p]
-                if not isinstance(secondary, Weapon): raise TypeError(f'Secondary at index {p} must be of type Weapon, not {type(primary).__name__}')
+                for p in range(len(secondaries)):
+                    secondary = secondaries[p]
+                    if not isinstance(secondary, Weapon): raise TypeError(f'Secondary at index {p} must be of type Weapon, not {type(primary).__name__}')
 
-            self.primaries = primaries
-            self.secondaries = secondaries
+                self.primaries = primaries
+                self.secondaries = secondaries
 
-        def _random_attachments(self, attachments: AttachmentLoadout, *, categorize_scopes: bool = False) -> dict:
-            """gets and returns a dictionary of random attachments using the attachments and any other arguments passed
+            def export(self):
+                """export method from Portable
 
-            Args:
-                attachments (AttachmentLoadout): attachment loadout to select random attachments for
-                categorize_scopes (bool, optional): whether to categorize scopes and randomly select a category, then a scope, or just select randomly from a combined list, defaults to False
+                Returns:
+                    dict: WeaponLoadout data in jsonable format
+                """
+                return {
+                    'primaries': [p.export() for p in self.primaries],
+                    'secondaries': [s.export() for s in self.secondaries]
+                }
 
-            Raises:
-                TypeError: if attachments is not of type AttachmentLoadout
-                TypeError: attachments internal _attachments dictionary contains attachment data for a category that is not of type dict or list
+            @staticmethod
+            def import_from(data, **options):
+                """static import method from Portable
 
-            Returns:
-                dict: a list of random attachments, keys being of type AttachmentCategory, values being AttachmentType
-            """
-            if not isinstance(attachments, self.AttachmentLoadout):
-                raise TypeError(f'attachments must be of type AttachmentLoadout, not {type(attachments).__name__}')
+                Args:
+                    data (any): data to import from
 
-            random_attachments = {}
-            for c, d in attachments._attachments.items():
-                if isinstance(d, dict):
-                    if categorize_scopes:
-                        scope_category_data = d[list(d.keys())[random.randint(0,len(d.keys())-1)]]
-                        random_scope = scope_category_data[random.randint(0,len(scope_category_data)-1)]
+                Returns:
+                    WeaponLoadout: weapon loadout class with data imported
+                """
+                primaries = data['primaries']
+                secondaries = data['secondaries']
+
+                if not isinstance(primaries, list):
+                    raise TypeError(f'primaries corresponding value must be of type list, not {type(primaries).__name__}')
+                
+                if not isinstance(secondaries, list):
+                    raise TypeError(f'secondaries corresponding value must be of type list, not {type(secondaries).__name__}')
+                
+                classed_primaries = [Weapon.import_from(p) for p in primaries]
+                classed_secondaries = [Weapon.import_from(s) for s in secondaries]
+                
+                return Weapon.Loadout.WeaponLoadout(classed_primaries, classed_secondaries)
+
+            def _random_attachments(self, attachments, *, categorize_scopes: bool = False) -> dict:
+                """gets and returns a dictionary of random attachments using the attachments and any other arguments passed
+
+                Args:
+                    attachments (AttachmentLoadout): attachment loadout to select random attachments for
+                    categorize_scopes (bool, optional): whether to categorize scopes and randomly select a category, then a scope, or just select randomly from a combined list, defaults to False
+
+                Raises:
+                    TypeError: if attachments is not of type AttachmentLoadout
+                    TypeError: attachments internal _attachments dictionary contains attachment data for a category that is not of type dict or list
+
+                Returns:
+                    dict: a list of random attachments, keys being of type AttachmentCategory, values being AttachmentType
+                """
+                if not isinstance(attachments, Weapon.Loadout.AttachmentLoadout):
+                    raise TypeError(f'attachments must be of type AttachmentLoadout, not {type(attachments).__name__}')
+
+                random_attachments = {}
+                for c, d in attachments._attachments.items():
+                    if isinstance(d, dict):
+                        if categorize_scopes:
+                            scope_category_data = d[list(d.keys())[random.randint(0,len(d.keys())-1)]]
+                            random_scope = scope_category_data[random.randint(0,len(scope_category_data)-1)]
+                        else:
+                            all_scopes = []
+                            for d in d.values():
+                                all_scopes = all_scopes + d
+                            random_scope = all_scopes[random.randint(0,len(all_scopes)-1)]
+                        random_attachments.update({c: random_scope})
+                    elif isinstance(d, list):
+                        attach = d[random.randint(0,len(d)-1)]
+                        random_attachments.update({c: attach})
                     else:
-                        all_scopes = []
-                        for d in d.values():
-                            all_scopes = all_scopes + d
-                        random_scope = all_scopes[random.randint(0,len(all_scopes)-1)]
-                    random_attachments.update({c: random_scope})
-                elif isinstance(d, list):
-                    attach = d[random.randint(0,len(d)-1)]
-                    random_attachments.update({c: attach})
-                else:
-                    raise TypeError(f'attachment data in each attachment category should be of type list of dict, not {type(d).__name__}')
-            return random_attachments
+                        raise TypeError(f'attachment data in each attachment category should be of type list of dict, not {type(d).__name__}')
+                return random_attachments
 
-        def randomize(self):
-            """get a finished version of this loadout with random data
+            def randomize(self):
+                """get a finished version of this loadout with random data
 
-            Returns:
-                _Loadout: a finished loadout class with randomized primaries and secondaries
-            """
-            random_primary = self.primaries[random.randint(0, len(self.primaries)-1)]
-            random_attachments_primary = self._random_attachments(random_primary.attachments)
-            primary = Finished._Weapon(random_primary.weapon_category, random_primary.weapon_type, random_primary.damage, random_primary.fire_rate, random_primary.mag, random_primary.max_mag, random_primary.ads, random_primary.reload_speed, random_primary.rsm, random_primary.destruction, Finished._Weapon._Loadout._AttachmentLoadout(**{k.name: v for k, v in random_attachments_primary.items()}), random_primary.modifiers)
+                Returns:
+                    _Loadout: a finished loadout class with randomized primaries and secondaries
+                """
+                random_primary = self.primaries[random.randint(0, len(self.primaries)-1)]
+                random_attachments_primary = self._random_attachments(random_primary.attachments)
+                primary = Finished._Weapon(random_primary.weapon_category, random_primary.weapon_type, random_primary.damage, random_primary.fire_rate, random_primary.mag, random_primary.max_mag, random_primary.ads, random_primary.reload_speed, random_primary.rsm, random_primary.destruction, Finished._Weapon._Loadout._AttachmentLoadout(**{k.name: v for k, v in random_attachments_primary.items()}), random_primary.modifiers)
 
-            random_secondary = self.secondaries[random.randint(0, len(self.secondaries)-1)]
-            random_attachments_secondary = self._random_attachments(random_secondary.attachments)
-            secondary = Finished._Weapon(random_secondary.weapon_category, random_secondary.weapon_type, random_secondary.damage, random_secondary.fire_rate, random_secondary.mag, random_secondary.max_mag, random_secondary.ads, random_secondary.reload_speed, random_secondary.rsm, random_secondary.destruction, Finished._Weapon._Loadout._AttachmentLoadout(**{k.name: v for k, v in random_attachments_secondary.items()}), random_secondary.modifiers)
+                random_secondary = self.secondaries[random.randint(0, len(self.secondaries)-1)]
+                random_attachments_secondary = self._random_attachments(random_secondary.attachments)
+                secondary = Finished._Weapon(random_secondary.weapon_category, random_secondary.weapon_type, random_secondary.damage, random_secondary.fire_rate, random_secondary.mag, random_secondary.max_mag, random_secondary.ads, random_secondary.reload_speed, random_secondary.rsm, random_secondary.destruction, Finished._Weapon._Loadout._AttachmentLoadout(**{k.name: v for k, v in random_attachments_secondary.items()}), random_secondary.modifiers)
 
-            return Finished._Weapon._Loadout(primary, secondary)
-        
-        def __repr__(self) -> str:
-            """representation for Loadout class
+                return Finished._Weapon._Loadout._WeaponLoadout(primary, secondary)
+            
+            def __repr__(self) -> str:
+                """representation for Loadout class
 
-            Returns:
-                rep (str): stringified loadout
-            """
-            return f'Loadout<primaries={self.primaries}, secondaries={self.secondaries}>'
+                Returns:
+                    rep (str): stringified loadout
+                """
+                return f'Loadout<primaries={self.primaries}, secondaries={self.secondaries}>'
 
     class Attachment:
         """contains all classes and methods related to attachment creation and management
@@ -825,7 +930,12 @@ class Weapon:
             LASER = "Laser sight"
             NONE = "None"
 
-    class ModifierManager:
+        class GenericAttachment(AttachmentType, enum.Enum):
+            """child enum of AttachmentType for underbarrel attachments, with corresponding labels
+            """
+            NONE = "None"
+
+    class ModifierManager(Portable):
         class ModifiableWeaponAttribute(enum.Enum):
             """enum of modifiable weapon attributes, with corresponding labels and types
             """
@@ -864,7 +974,7 @@ class Weapon:
                 self.modifier = modifier
                 self.source = source
 
-            def export(self) -> dict:
+            def export(self, **options) -> dict:
                 """export method from Portable
 
                 Returns:
@@ -875,6 +985,10 @@ class Weapon:
                         self.modified_attribute.name: self.modifier
                     }
                 }
+            
+            @staticmethod
+            def import_from(data, **options):
+                raise Error.NotImportable(f'attribute modifier isn\'t importable because there currently is no reason to implement it')
 
             def __repr__(self):
                 """representation for AttributeModifier class
@@ -891,24 +1005,65 @@ class Weapon:
                 TypeError: modifier list within modifiers is not of type dict
                 TypeError: modifiers for any attachment is not of type dict
             """
+            self._modifiers = []
             if len(modifiers) == 0: 
                 return
             
-            self._modifiers = {}
-            for _, mods in modifiers.items():
-                if not isinstance(mods, dict):
-                    raise TypeError(f'modifiers for each attachment category must be of type dict, not {type(mods).__name__}')
+            for att, mod_list in modifiers.items():
+                if not isinstance(mod_list, dict):
+                    raise TypeError(f'modifiers for each attachment category must be of type dict, not {type(mod_list).__name__}')
+                
+                attach_type = _util.get_attachment_type_from_string(att)
+                for attr, mod in mod_list.items():
+                    attr_type = Weapon.ModifierManager.ModifiableWeaponAttribute[attr]
+                    self._modifiers.append(Weapon.ModifierManager.AttributeModifier(attr_type, mod, attach_type))
 
-                for a, m in mods.items():
-                    attach_type = _util.attachment_type_from_string(a)
-                    if not isinstance(m, dict):
-                        raise TypeError(f'modifiers for each attachment type must be of type dict, not {type(mods).__name__}')
+        def export(self, **options):
+            """export method from Portable
+
+            Returns:
+                dict: ModifierManager data in jsonable format
+            """
+            mods = {}
+            if 'attachments' in options:
+                attachments = options['attachments']
+                aa = attachments.get_all_attachments()
+                for m in self._modifiers:
+                    if(m.source not in aa):
+                        continue
                     
-                    modifier_list = []
-                    for v, mod in m.items():
-                        modded_value = self.ModifiableWeaponAttribute[v]
-                        modifier_list.append(self.AttributeModifier(modded_value, mod, attach_type))
-                    self._modifiers.update({attach_type: modifier_list})
+                    mods.update({
+                        m.source.name: {
+                            m.modified_attribute.name: m.modifier
+                        }
+                    })
+            else:
+                for m in self._modifiers:
+                    mods.update({
+                        m.source.name: {
+                            m.modified_attribute.name: m.modifier
+                        }
+                    })
+                    
+            return mods
+        
+        @staticmethod
+        def import_from(data, **options):
+            """static import method from Portable
+
+            Args:
+                data (any): data to import from
+
+            Returns:
+                ModifierManager: modifier manager class with data imported
+            """
+            if isinstance(data, str):
+                data = json.loads(data)
+
+            if not isinstance(data, dict):
+                raise TypeError(f'data must be a dict or a dict in a json string')
+            
+            return Weapon.ModifierManager(**data)
 
         def has_modifier(self, attachment_type) -> bool:
             """gets whether there are any modifiers for the given AttachmentType
@@ -957,10 +1112,17 @@ class Weapon:
                 list: list of AttributeModifier's
             """
             mods = []
-            for _, l in self._modifiers.items():
-                for m in l:
-                    mods.append(m)
+            for m in self._modifiers:
+                mods.append(m)
             return mods
+        
+        def __repr__(self) -> str:
+            """representation for ModifierManager class
+
+            Returns:
+                str: stringified ModifierManager
+            """
+            return f'ModifierManager<_modifiers={self._modifiers}>'
 
     def __init__(self, weapon_category: WeaponCategory, weapon_type: WeaponType, damage: int, fire_rate: int, mag: int, max_mag: int, ads: float | int, reload_speed: float | int, rsm: float | int, destruction: Destruction, attachments: Loadout.AttachmentLoadout, modifiers: ModifierManager):
         """constructor for Weapon class
@@ -994,26 +1156,26 @@ class Weapon:
             TypeError: if modifiers is not of type ModifierManager
         """
         if not isinstance(weapon_category, self.WeaponCategory):
-            raise TypeError(f'weapon_category ({weapon_category}) must be of type WeaponCategory, not {type(weapon_category).__name__}')
+            raise TypeError(f'weapon_category must be of type WeaponCategory, not {type(weapon_category).__name__}')
         if not isinstance(weapon_type, self.WeaponType):
-            raise TypeError(f'weapon_type ({weapon_type}) must be of type WeaponType, not {type(weapon_type).__name__}')
+            raise TypeError(f'weapon_type must be of type WeaponType, not {type(weapon_type).__name__}')
         if not isinstance(damage, int):
-            raise TypeError(f'damage ({damage}) must be of type int, not {type(damage).__name__}')
+            raise TypeError(f'damage must be of type int, not {type(damage).__name__}')
         if not isinstance(fire_rate, int):
-            raise TypeError(f'fire_rate ({fire_rate}) must be of type int, not {type(fire_rate).__name__}')
+            raise TypeError(f'fire_rate must be of type int, not {type(fire_rate).__name__}')
         if not isinstance(mag, int):
-            raise TypeError(f'mag ({msg}) must be of type int, not {type(mag).__name__}')
+            raise TypeError(f'mag must be of type int, not {type(mag).__name__}')
         if not isinstance(max_mag, int):
-            raise TypeError(f'max_mag ({max_mag}) must be of type int, not {type(max_mag).__name__}')
+            raise TypeError(f'max_mag must be of type int, not {type(max_mag).__name__}')
         if not isinstance(ads, float):
             if isinstance(ads, int): ads = float(ads)
-            else: raise TypeError(f'ads ({ads}) must be of type float, not {type(ads).__name__}')
+            else: raise TypeError(f'ads must be of type float, not {type(ads).__name__}')
         if not isinstance(reload_speed, float):
             if isinstance(reload_speed, int): reload_speed = float(reload_speed)
-            else: raise TypeError(f'reload_speed ({reload_speed}) must be of type float, not {type(reload_speed).__name__}')
+            else: raise TypeError(f'reload_speed must be of type float, not {type(reload_speed).__name__}')
         if not isinstance(rsm, float):
             if isinstance(rsm, int): rsm = float(rsm)
-            else: raise TypeError(f'rsm ({rsm}) must be of type float, not {type(rsm).__name__}')
+            else: raise TypeError(f'rsm must be of type float, not {type(rsm).__name__}')
         if not isinstance(destruction, self.Destruction):
             raise TypeError(f'destruction must be Destruction, not {type(destruction).__name__}')
         if not isinstance(attachments, self.Loadout.AttachmentLoadout):
@@ -1034,6 +1196,58 @@ class Weapon:
         self.attachments = attachments
         self.modifiers = modifiers
 
+    def export(self):
+        """export method from Portable
+
+        Returns:
+            dict: Weapon data in jsonable format
+        """
+        return {
+            'NAME': self.weapon_type.name,
+            'TYPE': self.weapon_category.name,
+            'DAMAGE': self.damage,
+            'FIRE_RATE': self.fire_rate,
+            'MAG': self.mag,
+            'MAX': self.max_mag,
+            'ADS': self.ads,
+            'RELOAD': self.reload_speed,
+            'RSM': self.rsm,
+            'DEST': self.destruction.name,
+            'ATTACHMENTS': self.attachments.export(),
+            'modifiers': self.modifiers.export()
+        }
+
+    @staticmethod
+    def import_from(data, **options):
+        """static import method from Portable
+
+        Args:
+            data (any): data to import from
+
+        Returns:
+            Weapon: weapon class with data imported
+        """
+        category = Weapon.WeaponCategory[data['TYPE']]
+        weapon_type = Weapon.WeaponType[data['NAME']]
+        destruction = Weapon.Destruction[data['DEST']]
+        attachments = Weapon.Loadout.AttachmentLoadout.import_from(data['ATTACHMENTS'])
+        modifiers = Weapon.ModifierManager.import_from(data['modifiers'])
+
+        return Weapon(
+            category,
+            weapon_type,
+            data['DAMAGE'],
+            data['FIRE_RATE'],
+            data['MAG'],
+            data['MAX'],
+            data['ADS'],
+            data['RELOAD'],
+            data['RSM'],
+            destruction,
+            attachments,
+            modifiers
+        )
+
     def __repr__(self) -> str: 
         """representation for class Weapon
 
@@ -1042,7 +1256,82 @@ class Weapon:
         """
         return f'Weapon<weapon_category={self.weapon_category}, weapon_type={self.weapon_type}, damage={self.damage}, fire_rate={self.fire_rate}, mag={self.mag}, max_mag={self.max_mag}, ads={self.ads}, reload_speed={self.reload_speed}, rsm={self.rsm}, destruction={self.destruction}, attachments={self.attachments}, modifiers={self.modifiers}>'
 
-class Operator:
+class Operator(Portable, Randomizable):
+    """class for operator data
+    """
+    class GadgetLoadout(Portable, Randomizable):
+        """class for gadget loadouts and modifying them
+        """
+        def __init__(self, gadgets: list):
+            """constructor for GadgetLoadout class
+
+            Args:
+                gadgets (list): list of OperatorGadget's
+
+            Raises:
+                TypeError: if gadgets is not of type list
+                TypeError: if any element within gadgets is not of type OperatorGadget
+            """
+            if not isinstance(gadgets, list):
+                raise TypeError(f'gadgets must be of type list, not {type(gadgets).__name__}')
+            
+            for g in range(len(gadgets)):
+                gadget = gadgets[g]
+                if not isinstance(gadget, Operator.OperatorGadget):
+                    raise TypeError(f'gadget at index {g} must be of type OperatorGadget, not {type(g).__name__}')
+                
+            self._gadgets = gadgets
+                
+        def get_all_gadgets(self):
+            """gets and returns a list of all useable gadgets
+
+            Returns:
+                list: list of OperatorGadget's
+            """
+            return self._gadgets
+        
+        @staticmethod
+        def import_from(data, **options):
+            """static import method from Portable
+
+            Args:
+                data (any): data to import from
+
+            Returns:
+                GadgetLoadout: gadget loadout class with data imported
+            """
+            gadgets = [_util.try_cast_enums(g, Operator.AttackerGadget, Operator.DefenderGadget) for g in data]
+            for g in gadgets:
+                if g == None:
+                    raise ValueError(f'a value within gadgets didn\'t have a corresponding AttackerGadget or DefenderGadget')
+                
+            return Operator.GadgetLoadout(gadgets)
+
+        def export(self, **options):
+            """export method from Portable
+
+            Returns:
+                dict: GadgetLoadout data in jsonable format
+            """
+            return [g.name for g in self._gadgets]
+        
+        def randomize(self):
+            """returns a finished gadget loadout
+
+            Returns:
+                _GadgetLoadout: finished gadget loadout
+            """
+            gadgets = self.get_all_gadgets()
+            return Finished._Operator._GadgetLoadout(self, gadgets[random.randint(0, len(gadgets)-1)])
+        
+        def __repr__(self):
+            """representation for GadgetLoadout class
+
+            Returns:
+                str: stringified GadgetLoadout
+            """
+            return f'GadgetLoadout<_gadgets={self._gadgets}>'
+        
     class OperatorType:
         """parent class for operator types
         """
@@ -1115,7 +1404,7 @@ class Operator:
         SPECIAL = "Special"
         GAS = "Gas Grenade"
 
-    def __init__(self, operator_type: OperatorType, operator_data: dict, roles: list[Role], difficulty: int, speed: int, health: int, ability: Ability, gadgets: list[OperatorGadget], weapons: Weapon.Loadout):
+    def __init__(self, operator_type: OperatorType, roles: list[Role], difficulty: int, speed: int, health: int, ability: Ability, gadgets: GadgetLoadout, weapons: Weapon.Loadout.WeaponLoadout):
         """constructor for Operator class
 
         Args:
@@ -1126,8 +1415,8 @@ class Operator:
             speed (int): speed of operator (1-3)
             health (int): health of operator (1-3)
             ability (Ability): operator's ability
-            gadgets (list[OperatorGadget]): operator's gadgets
-            weapons (Weapon.Loadout): operator's weapons
+            gadgets (GadgetLoadout): operator's gadgets
+            weapons (Weapon.Loadout.WeaponLoadout): operator's weapons
 
         Raises:
             TypeError: if operator_type is not of type OperatorType
@@ -1135,17 +1424,17 @@ class Operator:
             TypeError: if roles is not of type list
             TypeError: if any role within role is not of type Role
             TypeError: if difficulty is not of type int
+            ValueError: if difficulty is not within the range 1 to 3
             TypeError: if speed is not of type int
+            ValueError: if speed is not within the range 1 to 3
             TypeError: if health is not of type int
+            ValueError: if health is not within the range 1 to 3
             TypeError: if ability is not of type Ability
-            TypeError: if gadgets is not of type list
-            TypeError: if any gadget within gadgets is not of type Gadget
+            TypeError: if gadgets is not of type GadgetLoadout
             TypeError: if weapons is not of type Loadout
         """
         if not isinstance(operator_type, Operator.OperatorType):
             raise TypeError(f'operator_type must be of type OperatorType, not {type(operator_type).__name__}')
-        if not isinstance(operator_data, dict):
-            raise TypeError(f'operator_data must be of type dict, not {type(operator_data)}')
         if not isinstance(roles, list):
             raise TypeError(f'operator_type must be of type list, not {type(operator_type).__name__}')
         else:
@@ -1156,26 +1445,31 @@ class Operator:
 
         if not isinstance(difficulty, int):
             raise TypeError(f'difficulty must be of type int, not {type(difficulty).__name__}')
+        else:
+            if(difficulty <= 0 or difficulty > 3):
+                raise ValueError(f'difficulty must be between 1 and 3, not {difficulty}')
+            
         if not isinstance(speed, int):
             raise TypeError(f'speed must be of type int, not {type(speed).__name__}')
+        else:
+            if(speed <= 0 or speed > 3):
+                raise ValueError(f'speed must be between 1 and 3, not {speed}')
+            
         if not isinstance(health, int):
             raise TypeError(f'health must be of type int, not {type(health).__name__}')
+        else:
+            if(health <= 0 or health > 3):
+                raise ValueError(f'health must be between 1 and 3, not {health}')
+            
         if not isinstance(ability, Operator.Ability):
             raise TypeError(f'ability must be of type Ability, not {type(ability).__name__}')
 
-        if not isinstance(gadgets, list):
-            raise TypeError(f'gadgets must be of type list, not {type(gadgets).__name__}')
-        else:
-            for g in range(len(gadgets)):
-                gadget = gadgets[g]
-                if not isinstance(gadget, Operator.OperatorGadget):
-                    raise TypeError(f'gadget at index {g} must be of type OperatorGadget, not {type(gadget).__name__}')
-
-        if not isinstance(weapons, Weapon.Loadout):
+        if not isinstance(gadgets, self.GadgetLoadout):
+            raise TypeError(f'gadgets must be of type GadgetLoadout, not {type(gadgets).__name__}')
+        if not isinstance(weapons, Weapon.Loadout.WeaponLoadout):
             raise TypeError(f'weapons must be of type Loadout, not {type(weapons).__name__}')
-
+        
         self.operator_type = operator_type
-        self._operator_data = operator_data
         self.roles = roles
         self.difficulty = difficulty
         self.speed = speed
@@ -1190,133 +1484,62 @@ class Operator:
         Returns:
             _Operator: finished operator class
         """
-        return Finished._Operator(self.operator_type, self._operator_data, self.roles, self.difficulty, self.speed, self.health, self.ability, self.gadgets[random.randint(0,len(self.gadgets)-1)], self.weapons.randomize())
-
-    def __repr__(self) -> str:
-        """representation for Operator class
-
-        Returns:
-            str: stringified Operator
-        """
-        return f'Operator<operator_type={self.operator_type}, roles={self.roles}, difficulty={self.difficulty}, speed={self.speed}, health={self.health}, ability={self.ability}, gadgets={self.gadgets}, weapons={self.weapons}>'
-
+        return Finished._Operator(self.operator_type, self.roles, self.difficulty, self.speed, self.health, self.ability, self.gadgets.randomize(), self.weapons.randomize())
+    
     @staticmethod
-    def load(operator_type: OperatorType, c: str, d: dict):
-        """static method for loading data into a new Operator class
+    def import_from(data, **options):
+        """static import method from Portable
 
         Args:
-            operator_type (OperatorType): type of operator
-            c (str): what side the operator's on (attack / defend)
-            d (dict): data for operator
-
-        Raises:
-            TypeError: if operator_type is not of type OperatorType
-            TypeError: if c is not of type str
-            TypeError: if d is not of type dict
-            ValueError: when an attachment category in attachments_data is not loadable due to design
-            ValueError: when a slot index for primary / secondary is not 0 or 1
+            data (any): data to import from
 
         Returns:
-            Operator: operator data class
+            Operator: operator class with data imported
         """
-        if not isinstance(operator_type, Operator.OperatorType):
-            raise TypeError(f'operator_type must be of type OperatorType, not {type(operator_type)}')
+        op_name = data['name']
+        op_type = _util.try_cast_enums(op_name, Operator.AttackOperatorType, Operator.DefendOperatorType)
+        if op_type == None:
+            raise ValueError(f'value for operator name {op_name} has no corresponding AttackOperatorType or DefendOperatorType')
         
-        if not isinstance(c, str):
-            raise TypeError(f'c must be of type str, not {type(c).__name__}')
+        roles = [Operator.Role[r] for r in data['type']]
+
+        op_ability = data['ability']
+        ability = _util.try_cast_enums(op_ability, Operator.AttackerAbility, Operator.DefenderAbility)
+        if ability == None:
+            raise ValueError(f'value for operator ability {op_ability} has no corresponding AttackerAbility or DefenderAbility')
         
-        if not isinstance(d, dict):
-            raise TypeError(f'd must be of type dict, not {type(d).__name__}')
-
-        roles = [Operator.Role[t] for t in d['type']]
-        ability = Operator.AttackerAbility[d['ability']] if c == "attacker" else Operator.DefenderAbility[d['ability']]
-        gadgets = [
-            (Operator.AttackerGadget[g] if c == "attacker" else Operator.DefenderGadget[g]) for g in d['gadgets']
-        ]
-
-        primaries = []
-        secondaries = []
-
-        primary_data = d['weapons']['primaries']
-        secondary_data = d['weapons']['secondaries']
-        all_weapon_data = [primary_data, secondary_data]
-
-        for slot_index in range(len(all_weapon_data)):
-            total_weapon_data = all_weapon_data[slot_index]
-            for name, data in total_weapon_data.items():
-                #print(f' # {name}')
-                attachments_data = data['ATTACHMENTS']
-                attachment_map = {}
-
-                modifier_manager = Weapon.ModifierManager()
-                mod_in_data = 'modifiers' in data
-                if mod_in_data:
-                    modifier_manager = Weapon.ModifierManager(**data['modifiers'])
-
-                for attachment_category, attachments in attachments_data.items():
-                    attachment_category_class = Weapon.Attachment.AttachmentCategory[attachment_category]
-                    if attachment_category_class == Weapon.Attachment.AttachmentCategory.SCOPES: 
-                        scopes = {}
-                        for scope_category, scope_list in attachments.items():
-                            category = Weapon.Attachment.ScopeCategory[scope_category]
-                            scope_type = _util.get_scope_enum(category)
-                            
-                            final_scopes = []
-                            for s in scope_list:
-                                final_scopes.append(scope_type[s])
-
-                            scopes.update({category: final_scopes})
-                        
-                        attachment_map.update({attachment_category_class: scopes})
-                        #print(f'scopes: {scopes}')
-                    elif attachment_category_class == Weapon.Attachment.AttachmentCategory.BARRELS:
-                        barrels = []
-                        for b in attachments:
-                            barrels.append(Weapon.Attachment.BarrelAttachment[b])
-                        attachment_map.update({attachment_category_class: barrels})
-                        #print(f'barrels: {barrels}')
-                    elif attachment_category_class == Weapon.Attachment.AttachmentCategory.GRIPS:
-                        grips = []
-                        for g in attachments:
-                            grips.append(Weapon.Attachment.GripAttachment[g])
-                        attachment_map.update({attachment_category_class: grips})
-                        #print(f'grips: {grips}')
-                    elif attachment_category_class == Weapon.Attachment.AttachmentCategory.UNDERBARRELS:
-                        grips = []
-                        for u in attachments:
-                            grips.append(Weapon.Attachment.UnderbarrelAttachment[u])
-                        attachment_map.update({attachment_category_class: grips})
-                        #print(f'grips: {grips}')
-                    else: 
-                        raise ValueError(f'attachment_category has an invalid value of {attachment_category}')
-
-                new_weapon = Weapon(
-                    Weapon.WeaponCategory[data['TYPE']],
-                    Weapon.WeaponType[name],
-                    data['DAMAGE'],
-                    data['FIRE_RATE'],
-                    data['MAG'],
-                    data['MAX'],
-                    data['ADS'],
-                    data['RELOAD'],
-                    data['RSM'],
-                    Weapon.Destruction[data['DEST']],
-                    Weapon.Loadout.AttachmentLoadout(**{k.name: v for k, v in attachment_map.items()}),
-                    modifier_manager
-                )
-                
-                if slot_index == 0: 
-                    primaries.append(new_weapon)
-                elif slot_index == 1: 
-                    secondaries.append(new_weapon)
-                else:
-                    raise ValueError(f'slot_index is != 0, 1 ({slot_index})')
+        gadgets = Operator.GadgetLoadout.import_from(data['gadgets'])
+        loadout = Weapon.Loadout.WeaponLoadout.import_from(data['weapons'])
         
-        weapons = Weapon.Loadout(primaries, secondaries)
+        #print(f'op_type={op_type}, roles={roles}, ability={ability}, gadgets={gadgets}, loadout={loadout}')
 
         return Operator(
-            operator_type, d, roles, d['difficulty'], d['speed'], d['health'], ability, gadgets, weapons
+            op_type,
+            roles,
+            data['difficulty'],
+            data['speed'],
+            data['health'],
+            ability,
+            gadgets,
+            loadout
         )
+    
+    def export(self):
+        """export method from Portable
+
+        Returns:
+            dict: Operator data in jsonable format
+        """
+        return {
+            'name': self.operator_type.name,
+            'roles': [r.name for r in self.roles],
+            'difficulty': self.difficulty,
+            'speed': self.speed,
+            'health': self.health,
+            'ability': self.ability.name,
+            'gadgets': self.gadgets.export(),
+            'weapons': self.weapons.export()
+        }
 
     @staticmethod
     def get(operator_type: OperatorType):
@@ -1333,13 +1556,21 @@ class Operator:
         """
         if not isinstance(operator_type, Operator.OperatorType):
             raise TypeError(f'operator_type must be of type str or OperatorType, not {type(operator_type).__name__}')
-
+        
         categorized_operators = _util.operator_data()
         for c in categorized_operators:
-            for n, d in categorized_operators[c].items():
-                if n != operator_type.name: continue
+            for d in categorized_operators[c]:
+                if d['name'] != operator_type.name: continue
 
-                return Operator.load(operator_type, c, d)
+                return Operator.import_from(d)
+            
+    def __repr__(self) -> str:
+        """representation for Operator class
+
+        Returns:
+            str: stringified Operator
+        """
+        return f'Operator<operator_type={self.operator_type}, roles={self.roles}, difficulty={self.difficulty}, speed={self.speed}, health={self.health}, ability={self.ability}, gadgets={self.gadgets}, weapons={self.weapons}>'
 
 class Finished:
     """class containing everything about finished data
@@ -1347,7 +1578,7 @@ class Finished:
     class _Weapon(Portable):
         """child of Portable for finished weapon data
         """
-        class _Loadout(Portable):
+        class _Loadout:
             """child of Portable for finished loadout data
             """
             class _AttachmentLoadout(Portable):
@@ -1361,6 +1592,7 @@ class Finished:
                     """
                     self._attachments = {}
                     for c, a in attachments.items():
+                        #print(f'c={c}, a={a}, type(a)={type(a).__name__}')
                         if not isinstance(a, Weapon.Attachment.AttachmentType):
                             raise TypeError(f'attachment must be of type AttachmentType, not {type(a).__name__}')
                                 
@@ -1368,13 +1600,47 @@ class Finished:
                         self._attachments.update({category: a})
                         setattr(self, category.name.lower(), a)
 
-                def export(self):
+                def export(self, **options):
                     """export method from Portable
 
                     Returns:
                         dict: _AttachmentLoadout data in jsonable format
                     """
                     return {c.name[:-1]:a.name for c, a in self._attachments.items()}
+                                
+                @staticmethod
+                def import_from(data, **options):
+                    """static import method from Portable
+
+                    Args:
+                        data (any): data to import from
+
+                    Returns:
+                        _AttachmentLoadout: finished attachment loadout class with data imported
+                    """
+                    if isinstance(data, str):
+                        data = json.loads(data)
+
+                    if not isinstance(data, dict):
+                        raise TypeError(f'data must be a dict or a dict in a json string')
+
+                    new_attachments = {}
+                    for c, a in data.items():
+                        attach_type = _util.get_attachment_type_from_string(a)
+                        new_attachments.update({c + 'S': attach_type})
+
+                    return Finished._Weapon._Loadout._AttachmentLoadout(**new_attachments)
+                
+                def get_all_attachments(self) -> list[Weapon.Attachment.AttachmentType]:
+                    """gets a list of all attachments equip on the weapon
+
+                    Returns:
+                        list[Weapon.Attachment.AttachmentType]: list of AttachmentType's
+                    """
+                    attachments = []
+                    for _, a in self._attachments.items():
+                        attachments.append(a)
+                    return attachments
 
                 def _get_attachment_by_category(self, category) -> Weapon.Attachment.AttachmentType:
                     """gets an attachment currently equip by AttachmentCategory
@@ -1428,44 +1694,69 @@ class Finished:
                     """
                     return self._get_attachment_by_category(Weapon.Attachment.AttachmentCategory.UNDERBARRELS)
                 
-            def __init__(self, primary, secondary):
-                """constructor for _Loadout class
+            class _WeaponLoadout(Portable):
+                def __init__(self, primary, secondary):
+                    """constructor for _Loadout class
 
-                Args:
-                    primary (_Weapon): finished weapon for primary
-                    secondary (_Weapon): finished weapon for secondary
+                    Args:
+                        primary (_Weapon): finished weapon for primary
+                        secondary (_Weapon): finished weapon for secondary
 
-                Raises:
-                    TypeError: if primary not of type _Weapon
-                    TypeError: if secondary not of type _Weapon
-                """
-                if not isinstance(primary, Finished._Weapon):
-                    raise TypeError(f'primary must be of type _Weapon, not {type(primary).__name__}')
+                    Raises:
+                        TypeError: if primary not of type _Weapon
+                        TypeError: if secondary not of type _Weapon
+                    """
+                    if not isinstance(primary, Finished._Weapon):
+                        raise TypeError(f'primary must be of type _Weapon, not {type(primary).__name__}')
 
-                if not isinstance(secondary, Finished._Weapon):
-                    raise TypeError(f'secondary must be of type _Weapon, not {type(secondary).__name__}')
+                    if not isinstance(secondary, Finished._Weapon):
+                        raise TypeError(f'secondary must be of type _Weapon, not {type(secondary).__name__}')
 
-                self.primary = primary
-                self.secondary = secondary
+                    self.primary = primary
+                    self.secondary = secondary
 
-            def export(self) -> dict:
-                """export method from Portable
+                def export(self, **options) -> dict:
+                    """export method from Portable
 
-                Returns:
-                    dict: _Loadout data in jsonable format
-                """
-                return {
-                    'primary': self.primary.export(),
-                    'secondary': self.secondary.export()
-                }
+                    Returns:
+                        dict: _Loadout data in jsonable format
+                    """
+                    return {
+                        'primary': self.primary.export(),
+                        'secondary': self.secondary.export()
+                    }
+                
+                @staticmethod
+                def import_from(data, **options):
+                    """static import method from Portable
 
-            def __repr__(self) -> str:
-                """representation for _Loadout class
+                    Args:
+                        data (any): data to import from
 
-                Returns:
-                    str: stringified _Loadout
-                """
-                return f'_Loadout<primary={self.primary}, secondary={self.secondary}>'
+                    Returns:
+                        _WeaponLoadout: finished weapon loadout class with data imported
+                    """
+                    if isinstance(data, str):
+                        data = json.loads(data)
+
+                    if not isinstance(data, dict):
+                        raise TypeError(f'data must be a dict or a dict in a json string')
+                    
+                    primary_data = data['primary']
+                    secondary_data = data['secondary']
+
+                    return Finished._Weapon._Loadout._WeaponLoadout(
+                        primary=Finished._Weapon.import_from(primary_data),
+                        secondary=Finished._Weapon.import_from(secondary_data)
+                    )
+
+                def __repr__(self) -> str:
+                    """representation for _Loadout class
+
+                    Returns:
+                        str: stringified _Loadout
+                    """
+                    return f'_Loadout<primary={self.primary}, secondary={self.secondary}>'
 
         def __init__(self, weapon_category: Weapon.WeaponCategory, weapon_type: Weapon.WeaponType, damage: int, fire_rate: int, mag: int, max_mag: int, ads: float, reload_speed: float, rsm: float, destruction: Weapon.Destruction, attachments: _Loadout._AttachmentLoadout, modifiers: Weapon.ModifierManager):
             """constructor for _Weapon
@@ -1539,16 +1830,12 @@ class Finished:
             self.attachments = attachments
             self.modifiers = modifiers
 
-        def export(self):
+        def export(self, **options):
             """export method from Portable
 
             Returns:
                 dict: _Weapon data in jsonable format
             """
-            modifiers = {}
-            for m in self.get_available_modifiers():
-                modifiers.update(m.export())
-
             return {
                 'NAME': self.weapon_type.name,
                 'TYPE': self.weapon_category.name,
@@ -1561,8 +1848,39 @@ class Finished:
                 'RSM': self._base_rsm,
                 'DEST': self.destruction.name,
                 'ATTACHMENTS': self.attachments.export(),
-                'MODIFIERS': modifiers
+                'MODIFIERS': self.modifiers.export(attachments=self.attachments)
             }
+        
+        @staticmethod
+        def import_from(data, **options):
+            """static import method from Portable
+
+            Args:
+                data (any): data to import from
+
+            Returns:
+                _Weapon: finished weapon class with data imported
+            """
+            if isinstance(data, str):
+                data = json.loads(data)
+
+            if not isinstance(data, dict):
+                raise TypeError(f'data must be a dict or a dict in a json string')
+
+            return Finished._Weapon(
+                Weapon.WeaponCategory[data['TYPE']],
+                Weapon.WeaponType[data['NAME']],
+                data['DAMAGE'],
+                data['FIRE_RATE'],
+                data['MAG'],
+                data['MAX'],
+                data['ADS'],
+                data['RELOAD'],
+                data['RSM'],
+                Weapon.Destruction[data['DEST']],
+                Finished._Weapon._Loadout._AttachmentLoadout.import_from(data['ATTACHMENTS']),
+                Weapon.ModifierManager.import_from(data['MODIFIERS'])
+            )
 
         def __repr__(self):
             """representation of _Weapon class
@@ -1811,9 +2129,78 @@ class Finished:
             return self.weapon_type.value
 
     class _Operator(Portable):
+        """finished operator class
+        """
+        class _GadgetLoadout(Portable):
+            """finished gadget loadout class
+            """
+            def __init__(self, unfinished_gadget_loadout: Operator.GadgetLoadout, current_gadget: Operator.OperatorGadget):
+                """constructor for _GadgetLoadout class
+
+                Args:
+                    unfinished_gadget_loadout (Operator.GadgetLoadout): unfinished GadgetLoadout class
+                    current_gadget (Operator.OperatorGadget): current operator gadget
+
+                Raises:
+                    TypeError: if unfinished_gadget_loadout is not of type GadgetLoadout
+                    TypeError: if current_gadget is not of type OperatorGadget
+                """
+                if not isinstance(unfinished_gadget_loadout, Operator.GadgetLoadout):
+                    raise TypeError(f'unfinished_gadget_loadout must be of type GadgetLoadout, not {type(unfinished_gadget_loadout).__name__}')
+
+                if not isinstance(current_gadget, Operator.OperatorGadget):
+                    raise TypeError(f'current_gadget must be of type OperatorGadget, not {type(current_gadget).__name__}')
+
+                self._gadget_loadout = unfinished_gadget_loadout
+                self._current_gadget = current_gadget
+
+            @staticmethod
+            def import_from(data, **options):
+                """static import method from Portable
+
+                Args:
+                    data (any): data to import from
+
+                Returns:
+                    _Operator: finished gadget loadout class
+                """
+                raise Error.NotImportable(f'this class is not importable, create the GadgetLoadout and pass it to this')
+
+            def export(self):
+                """export method from Portable
+
+                Returns:
+                    dict: _Operator data in jsonable format
+                """
+                return self._current_gadget.name
+
+            def change_gadget(self, new_gadget: Operator.OperatorGadget):
+                """changes the current gadget to a new one
+
+                Args:
+                    new_gadget (Operator.OperatorGadget): new gadget to use
+
+                Raises:
+                    TypeError: if new_gadget is not of type OperatorGadget
+                    Error.GadgetNotAvailableError: if new_gadget is not contained in the original gadget loadouts available gadgets
+                """
+                if not isinstance(new_gadget, Operator.OperatorGadget):
+                    raise TypeError(f'new_gadget must be of type OperatorGadget, not {type(new_gadget).__name__}')
+                
+                if(new_gadget not in self._gadget_loadout.get_all_gadgets()):
+                    raise Error.GadgetNotAvailableError(f'gadget {new_gadget.name} is not a valid gadget, available options are {', '.join(g.name for g in self._gadget_loadout.get_all_gadgets())}')
+                
+                self._current_gadget = new_gadget
+            
+            @property
+            def gadget(self):
+                """property for the current gadget
+                """
+                return self._current_gadget
+
         """child of Portable class for finished operator data
         """
-        def __init__(self, operator_type: Operator.OperatorType, operator_data: dict, roles: list[Operator.Role], difficulty: int, speed: int, health: int, ability: Operator.Ability, gadget: Operator.OperatorGadget, weapons):
+        def __init__(self, operator_type: Operator.OperatorType, roles: list[Operator.Role], difficulty: int, speed: int, health: int, ability: Operator.Ability, gadget: _GadgetLoadout, weapons):
             """constructor for _Operator class
 
             Args:
@@ -1824,8 +2211,8 @@ class Finished:
                 speed (int): operator's speed (1-3)
                 health (int): operator's health (1-3)
                 ability (Operator.Ability): operator's ability
-                gadget (Operator.OperatorGadget): operator's gadget
-                weapons (_type_): operator's loadout
+                gadget (Operator._GadgetLoadout): operator's gadget
+                weapons (_WeaponLoadout): operator's loadout
 
             Raises:
                 TypeError: if operator_type is not of type OperatorType
@@ -1833,18 +2220,18 @@ class Finished:
                 TypeError: if roles is not of type list
                 TypeError: if any role within roles is not of type Role
                 TypeError: difficulty is not of type int
+                ValueError: if difficulty is not within range 1 to 3
                 TypeError: speed is not of type int
+                ValueError: if speed is not within range 1 to 3
                 TypeError: health is not of type int
+                ValueError: if health is not within range 1 to 3
                 TypeError: ability is not of type Ability
-                TypeError: gadget is not of type OperatorGadget
-                TypeError: weapons is not of type _Loadout
+                TypeError: gadget is not of type _GadgetLoadout
+                TypeError: weapons is not of type _WeaponLoadout
             """
+
             if not isinstance(operator_type, Operator.OperatorType):
                 raise TypeError(f'operator_type must be of type OperatorType, not {type(operator_type).__name__}')
-            
-            if not isinstance(operator_data, dict):
-                raise TypeError(f'operator_data must be of type dict, not {type(operator_data)}')
-
             if not isinstance(roles, list):
                 raise TypeError(f'operator_type must be of type list, not {type(operator_type).__name__}')
             else:
@@ -1855,20 +2242,31 @@ class Finished:
 
             if not isinstance(difficulty, int):
                 raise TypeError(f'difficulty must be of type int, not {type(difficulty).__name__}')
+            
+            if not isinstance(difficulty, int):
+                raise TypeError(f'difficulty must be of type int, not {type(difficulty).__name__}')
+            else:
+                if(difficulty <= 0 or difficulty > 3):
+                    raise ValueError(f'difficulty must be between 1 and 3, not {difficulty}')
+                
             if not isinstance(speed, int):
                 raise TypeError(f'speed must be of type int, not {type(speed).__name__}')
+            else:
+                if(speed <= 0 or speed > 3):
+                    raise ValueError(f'speed must be between 1 and 3, not {speed}')
+                
             if not isinstance(health, int):
                 raise TypeError(f'health must be of type int, not {type(health).__name__}')
-            if not isinstance(ability, Operator.Ability):
-                raise TypeError(f'ability must be of type Ability, not {type(ability).__name__}')
+            else:
+                if(health <= 0 or health > 3):
+                    raise ValueError(f'health must be between 1 and 3, not {health}')
 
-            if not isinstance(gadget, Operator.OperatorGadget):
-                raise TypeError(f'gadgets must be of type OperatorGadget, not {type(gadget).__name__}')
-            if not isinstance(weapons, Finished._Weapon._Loadout):
+            if not isinstance(gadget, self._GadgetLoadout):
+                raise TypeError(f'gadgets must be of type _GadgetLoadout, not {type(gadget).__name__}')
+            if not isinstance(weapons, Finished._Weapon._Loadout._WeaponLoadout):
                 raise TypeError(f'weapons must be of type Loadout, not {type(weapons).__name__}')
 
             self.operator_type = operator_type
-            self._operator_data = operator_data
             self.roles = roles
             self.difficulty = difficulty
             self.speed = speed
@@ -1877,23 +2275,58 @@ class Finished:
             self.gadget = gadget
             self.weapons = weapons
 
-        def export(self):
+        def export(self, **options):
             """export method from Portable
 
             Returns:
                 dict: _Operator data in jsonable format
             """
             return {
-                self.operator_type.name: {
-                    'type': [r.name for r in self.roles],
-                    'difficulty': self.difficulty,
-                    'speed': self.speed,
-                    'health': self.health,
-                    'ability': self.ability.name,
-                    'gadget': self.gadget.name,
-                    'weapons': self.weapons.export(),
-                }
+                'name': self.operator_type.name,
+                'type': [r.name for r in self.roles],
+                'difficulty': self.difficulty,
+                'speed': self.speed,
+                'health': self.health,
+                'ability': self.ability.name,
+                'gadget': self.gadget._current_gadget.name,
+                'weapons': self.weapons.export(),
             }
+        
+        @staticmethod
+        def import_from(data, **options):
+            """static import method from Portable
+
+            Args:
+                data (any): data to import from
+
+            Returns:
+                _Operator: finished operator class
+            """
+
+            if isinstance(data, str):
+                data = json.loads(data)
+
+            if not isinstance(data, dict):
+                raise TypeError(f'data must be a dict or a dict in a json string')
+
+            op_type = _util.try_cast_enums(data['name'], Operator.AttackOperatorType, Operator.DefendOperatorType)
+            roles = [Operator.Role[r] for r in data['type']]
+            ability = _util.try_cast_enums(data['ability'], Operator.AttackerAbility, Operator.DefenderAbility)
+            gadget = _util.try_cast_enums(data['gadget'], Operator.AttackerGadget, Operator.DefenderGadget)
+
+            weapon_data = data['weapons']
+            weapons = Finished._Weapon._Loadout._WeaponLoadout.import_from(weapon_data)
+
+            return Finished._Operator(
+                op_type,
+                roles,
+                data['difficulty'],
+                data['speed'],
+                data['health'],
+                ability,
+                gadget,
+                weapons
+            )
         
         def get_primary(self):
             """gets operators primary
@@ -1917,4 +2350,4 @@ class Finished:
             Returns:
                 str: stringified _Operator
             """
-            return f'_Operator<operator_type={self.operator_type}, roles={self.roles}, difficulty={self.difficulty}, speed={self.speed}, health={self.health}, ability={self.ability}, gadgets={self.gadgets}, weapons={self.weapons}>'
+            return f'_Operator<operator_type={self.operator_type}, roles={self.roles}, difficulty={self.difficulty}, speed={self.speed}, health={self.health}, ability={self.ability}, gadgets={self.gadget}, weapons={self.weapons}>'
